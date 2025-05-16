@@ -48,5 +48,12 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _dataAccessLayer.UpdateUser(user);
             return Ok(new { success = true, message = "User updated successfully." });
         }
+
+        [HttpGet("allusers")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _dataAccessLayer.GetAllUsers();
+            return Ok(users);
+        }
     }
 }

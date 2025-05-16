@@ -20,6 +20,7 @@ public class BooksDAL
         using (var con = new SqlConnection(_connectionString))
         {
             var cmd = new SqlCommand("sp_viewAllBooks",con);
+            cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
 
             using (var reader = cmd.ExecuteReader())

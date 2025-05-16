@@ -93,18 +93,21 @@ public class DataAccessLayer
 
         using (var connection = new SqlConnection(_connectionString))
         {
-            var command = new SqlCommand("SELECT Id, Email, Pass FROM Users", connection);
+            var command = new SqlCommand("sp_getAllUsers", connection);
             connection.Open();
-
+            command.CommandType = CommandType.StoredProcedure;
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
                     users.Add(new Users
                     {
-                        Id = Convert.ToInt32(reader["Id"]),
-                        Email = reader["Email"].ToString(),
-                        Password = reader["Pass"].ToString()
+                        userId = Convert.ToInt32(reader["userId"]),
+                        firstName = reader["firstName"].ToString(),
+                        lastName = reader["lastName"].ToString(),
+                        email = reader["email"].ToString(),
+                        pass = reader["pass"].ToString(),
+                        mobileNo = reader["mobileNo"].ToString()
 
                     });
                 }
