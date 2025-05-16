@@ -11,7 +11,7 @@ public class DataAccessLayer
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
-
+    //add user 
     public void AddUser(Users user)
     {
         using (var con = new SqlConnection(_connectionString))
@@ -33,6 +33,7 @@ public class DataAccessLayer
         }
     }
 
+    //user login 
     public bool LoginUser(Login login, out string message)
     {
         message = "";
@@ -61,5 +62,27 @@ public class DataAccessLayer
             }
         }
     }
-    
+
+    //user update 
+    public void UpdateUser(Users user)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+             using (var cmd = new SqlCommand("sp_updateUser1", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                cmd.Parameters.AddWithValue("@lastName", user.lastName);
+                cmd.Parameters.AddWithValue("@email", user.email);
+                cmd.Parameters.AddWithValue("@pass", user.pass);
+                cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
+
+                int affectedrow = cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+
 }
