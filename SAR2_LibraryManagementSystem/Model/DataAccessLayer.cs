@@ -32,4 +32,26 @@ public class DataAccessLayer
             }
         }
     }
+
+    public void LoginUser(Users user)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_LoginUser", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@email", user.email);
+                cmd.Parameters.AddWithValue("@pass", user.pass);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+
+                }
+            }
+        }
+    }
 }
