@@ -18,6 +18,7 @@ namespace SAR2_LibraryManagementSystem
 
             builder.Services.AddScoped<DataAccessLayer>();
             builder.Services.AddScoped<ManagerDAL>();
+            builder.Services.AddScoped<BooksDAL>();
 
             var app = builder.Build();
 
