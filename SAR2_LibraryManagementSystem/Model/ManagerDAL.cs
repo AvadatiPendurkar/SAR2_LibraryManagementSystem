@@ -31,14 +31,6 @@ public class ManagerDAL
 
             }
 
-
-
-
-
-
-
-
-
         }
     }
 }

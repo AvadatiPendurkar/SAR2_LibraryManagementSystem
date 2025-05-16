@@ -116,4 +116,21 @@ public class DataAccessLayer
         return users;
     }
 
+    //delete user
+    public void DeleteUser(int userId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_deleteUser1", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
 }

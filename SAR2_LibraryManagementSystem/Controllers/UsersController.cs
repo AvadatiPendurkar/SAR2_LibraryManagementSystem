@@ -55,5 +55,15 @@ namespace SAR2_LibraryManagementSystem.Controllers
             var users = _dataAccessLayer.GetAllUsers();
             return Ok(users);
         }
+
+        [HttpDelete("{userId}")]
+        public IActionResult DeleteUser(int userId)
+        {
+            if (userId <= 0)
+                return BadRequest("Invalid user ID.");
+
+            _dataAccessLayer.DeleteUser(userId);
+            return Ok(new { success = true, message = "User deleted successfully." });
+        }
     }
 }
