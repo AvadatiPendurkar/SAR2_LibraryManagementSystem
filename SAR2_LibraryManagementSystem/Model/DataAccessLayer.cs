@@ -28,9 +28,30 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
 
-                int affectedrow=cmd.ExecuteNonQuery();   
+                int affectedrow = cmd.ExecuteNonQuery();
             }
         }
     }
 
-}
+    public void LoginUser(Users user)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_LoginUser", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@email", user.email);
+                cmd.Parameters.AddWithValue("@pass", user.pass);
+
+                var reader=cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+
+                }
+            }
+        }
+    }
+}   
