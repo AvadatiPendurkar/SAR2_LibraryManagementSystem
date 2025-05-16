@@ -1,6 +1,7 @@
 ﻿namespace SAR2_LibraryManagementSystem.Model;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 public class DataAccessLayer
 {
@@ -17,20 +18,17 @@ public class DataAccessLayer
         {
             con.Open();
 
-            string sqlqury = "sp_addUser";
-
-
-            using (var cmd = new SqlCommand(sqlqury, con))
+            //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
+            using (var cmd = new SqlCommand("sp_addUser1", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@firstName", user.firstName);
                 cmd.Parameters.AddWithValue("@lastName", user.lastName);
                 cmd.Parameters.AddWithValue("@email", user.email);
-                cmd.Parameters.AddWithValue("@password", user.password);
+                cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
 
-                int affectedrow = cmd.ExecuteNonQuery();
-
+                int affectedrow=cmd.ExecuteNonQuery();   
             }
         }
     }

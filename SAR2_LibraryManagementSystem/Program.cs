@@ -1,4 +1,6 @@
 
+using SAR2_LibraryManagementSystem.Model;
+
 namespace SAR2_LibraryManagementSystem
 {
     public class Program
@@ -13,6 +15,8 @@ namespace SAR2_LibraryManagementSystem
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<DataAccessLayer>();
 
             var app = builder.Build();
 
