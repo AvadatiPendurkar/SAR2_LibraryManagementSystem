@@ -33,8 +33,9 @@ public class DataAccessLayer
         }
     }
 
-    public void LoginUser(Users user)
+    public bool LoginUser(Login login, out string message)
     {
+        message = "";
         using (var con = new SqlConnection(_connectionString))
         {
             con.Open();
@@ -46,12 +47,19 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@pass", login.password);
 
                 var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
+                if (reader.HasRows)
                 {
-
+                    message = "Login successful";
+                    return true;
                 }
+                else
+                {
+                    message = "Invalid email or password";
+                    return false;
+                }
+                   
             }
         }
     }
+    
 }
