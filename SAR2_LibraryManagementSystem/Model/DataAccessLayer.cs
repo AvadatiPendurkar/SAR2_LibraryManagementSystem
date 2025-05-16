@@ -33,7 +33,29 @@ public class DataAccessLayer
         }
     }
 
-    public void LoginUser(Login login)
+
+    public void AddBooks(Books book)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
+            using (var cmd = new SqlCommand("sp_addBooks", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@bookName", book.bookName);
+                cmd.Parameters.AddWithValue("@authorName", book.authorName);
+                cmd.Parameters.AddWithValue("@isbn", book.isbn);
+                cmd.Parameters.AddWithValue("@genre", book.genre);
+                cmd.Parameters.AddWithValue("@quantity", book.quantity);
+
+                int affectedrow = cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public void LoginUser(Users user)
     {
         using (var con = new SqlConnection(_connectionString))
         {
