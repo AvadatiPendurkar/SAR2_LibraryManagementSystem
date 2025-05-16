@@ -19,7 +19,7 @@ public class BooksDAL
         var books = new List<Books>();
         using (var con = new SqlConnection(_connectionString))
         {
-            var cmd = new SqlCommand("sp_GetAllBooks",con);
+            var cmd = new SqlCommand("sp_viewAllBooks",con);
             con.Open();
 
             using (var reader = cmd.ExecuteReader())
@@ -39,6 +39,28 @@ public class BooksDAL
             }
         }
         return books;
+    }
+
+    //View book by ID
+    public void ViewBookById(Books book)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_viewBookById", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@bookId", book.bookId);
+                cmd.Parameters.AddWithValue("@bookName", book.bookName);
+                cmd.Parameters.AddWithValue("@authorName", book.authorName);
+                cmd.Parameters.AddWithValue("@isbn", book.isbn);
+                cmd.Parameters.AddWithValue("@genre", book.genre);
+                cmd.Parameters.AddWithValue("@quantity", book.quantity);
+
+                cmd.ExecuteReader();
+            }
+        }
     }
 
     // Add new book
@@ -93,8 +115,7 @@ public class BooksDAL
             using (var cmd = new SqlCommand("sp_updateBooks", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@bookId", book.bookId);
-                
+                cmd.Parameters.AddWithValue("@bookId", book.bookId);                  
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
