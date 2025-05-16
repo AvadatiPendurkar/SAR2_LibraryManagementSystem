@@ -38,5 +38,15 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 return Unauthorized(new { success = false, message });
             }
         }
+
+        [HttpPut("update")]
+        public IActionResult UpdateUser(Users user)
+        {
+            if (user.userId <= 0)
+                return BadRequest("Invalid user ID.");
+
+            _dataAccessLayer.UpdateUser(user);
+            return Ok(new { success = true, message = "User updated successfully." });
+        }
     }
 }

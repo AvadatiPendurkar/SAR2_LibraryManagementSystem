@@ -73,6 +73,7 @@ public class DataAccessLayer
              using (var cmd = new SqlCommand("sp_updateUser1", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", user.userId);
                 cmd.Parameters.AddWithValue("@firstName", user.firstName);
                 cmd.Parameters.AddWithValue("@lastName", user.lastName);
                 cmd.Parameters.AddWithValue("@email", user.email);
@@ -84,5 +85,32 @@ public class DataAccessLayer
         }
     }
 
+    //view all users
+
+    public List<Users> GetAllUsers()
+    {
+        var users = new List<Users>();
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            var command = new SqlCommand("SELECT Id, Email, Pass FROM Users", connection);
+            connection.Open();
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    users.Add(new Users
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Email = reader["Email"].ToString(),
+                        Password = reader["Pass"].ToString()
+
+                    });
+                }
+            }
+        }
+        return users;
+    }
 
 }
