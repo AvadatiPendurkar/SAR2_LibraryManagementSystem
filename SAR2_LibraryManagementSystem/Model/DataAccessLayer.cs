@@ -33,7 +33,7 @@ public class DataAccessLayer
         }
     }
 
-    public void LoginUser(Users user)
+    public void LoginUser(Login login)
     {
         using (var con = new SqlConnection(_connectionString))
         {
@@ -42,8 +42,8 @@ public class DataAccessLayer
             using (var cmd = new SqlCommand("sp_LoginUser", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@email", user.email);
-                cmd.Parameters.AddWithValue("@pass", user.pass);
+                cmd.Parameters.AddWithValue("@email", login.email);
+                cmd.Parameters.AddWithValue("@pass", login.password);
 
                 var reader = cmd.ExecuteReader();
 
