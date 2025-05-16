@@ -17,6 +17,7 @@ namespace SAR2_LibraryManagementSystem
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<DataAccessLayer>();
+            builder.Services.AddScoped<ManagerDAL>();
 
             var app = builder.Build();
 
