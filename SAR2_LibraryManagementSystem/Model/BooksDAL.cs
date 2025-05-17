@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
+using System.Net;
 
 namespace SAR2_LibraryManagementSystem.Model;
 
@@ -19,7 +20,7 @@ public class BooksDAL
         var books = new List<Books>();
         using (var con = new SqlConnection(_connectionString))
         {
-            var cmd = new SqlCommand("sp_viewAllBooks",con);
+            var cmd = new SqlCommand("sp_viewAllBooks", con);
             cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
 
@@ -43,8 +44,9 @@ public class BooksDAL
     }
 
     //View book by ID
-    public void ViewBookById(Books book)
+    public Books ViewBookById(int bookId)
     {
+        Books book = null;
         using (var con = new SqlConnection(_connectionString))
         {
             con.Open();
@@ -52,16 +54,27 @@ public class BooksDAL
             using (var cmd = new SqlCommand("sp_viewBookById", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@bookId", book.bookId);
-                cmd.Parameters.AddWithValue("@bookName", book.bookName);
-                cmd.Parameters.AddWithValue("@authorName", book.authorName);
-                cmd.Parameters.AddWithValue("@isbn", book.isbn);
-                cmd.Parameters.AddWithValue("@genre", book.genre);
-                cmd.Parameters.AddWithValue("@quantity", book.quantity);
+                cmd.Parameters.AddWithValue("@bookId", bookId);
 
-                cmd.ExecuteReader();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())  
+                    {
+                        book = new Books
+                        {
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            isbn = reader["isbn"].ToString(),
+                            genre = reader["genre"].ToString(),
+                            quantity = Convert.ToInt32(reader["quantity"])
+                        };
+                    }
+                }
+
             }
         }
+        return book;
     }
 
     // Add new book
@@ -85,14 +98,14 @@ public class BooksDAL
             }
         }
     }
-
+    //update books
     public void UpdateBooks(Books book)
     {
         using (var con= new SqlConnection(_connectionString))
         {
             con.Open();
 
-            using (var cmd = new SqlCommand("sp_updateBooks", con))
+            using (var cmd = new SqlCommand("sp_updateBook", con))
             {
 
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -108,14 +121,14 @@ public class BooksDAL
             }
         }
     }
-
+    // delete books
     public void DeleteBooks(int bookId)
     {
         using (var con = new SqlConnection(_connectionString))
         {
             con.Open();
 
-            using (var cmd = new SqlCommand("sp_updateBooks", con))
+            using (var cmd = new SqlCommand("sp_deleteBook", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@bookId", bookId);                 
