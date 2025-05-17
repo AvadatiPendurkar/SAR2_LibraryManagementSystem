@@ -86,7 +86,6 @@ public class DataAccessLayer
     }
 
     //view all users
-
     public List<Users> GetAllUsers()
     {
         var users = new List<Users>();
@@ -116,4 +115,58 @@ public class DataAccessLayer
         return users;
     }
 
+    //delete user
+    public void DeleteUser(int userId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_deleteUser1", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    //view userbyid
+    public Users GetUsersById(int userId)
+    {
+        Users user = null;
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_getUserById", con))
+            {
+                cmd.CommandType= CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@userId",userId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        user=new Users
+                        {
+                            userId = Convert.ToInt32(reader["userId"]),
+                            firstName = reader["firstName"].ToString(),
+                            lastName = reader["lastName"].ToString(),
+                            email = reader["email"].ToString(),
+                            pass = reader["pass"].ToString(),
+                            mobileNo = reader["mobileNo"].ToString()
+
+                        };
+                    }
+                }
+
+
+            }
+        }
+        return user;
+
+    }
 }

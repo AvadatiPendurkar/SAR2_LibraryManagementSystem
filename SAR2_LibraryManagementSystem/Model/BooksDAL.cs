@@ -94,6 +94,7 @@ public class BooksDAL
 
             using (var cmd = new SqlCommand("sp_updateBooks", con))
             {
+
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@bookId", book.bookId);
                 cmd.Parameters.AddWithValue("@bookName", book.bookName);
@@ -103,11 +104,12 @@ public class BooksDAL
                 cmd.Parameters.AddWithValue("@quantity", book.quantity);
 
                 int affectedrow = cmd.ExecuteNonQuery();
+
             }
         }
     }
 
-    public void DeleteBooks(Books book)
+    public void DeleteBooks(int bookId)
     {
         using (var con = new SqlConnection(_connectionString))
         {
@@ -116,12 +118,11 @@ public class BooksDAL
             using (var cmd = new SqlCommand("sp_updateBooks", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@bookId", book.bookId);                  
+                cmd.Parameters.AddWithValue("@bookId", bookId);                 
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
         }
     }
-
 
 }
