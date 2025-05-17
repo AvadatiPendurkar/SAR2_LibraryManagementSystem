@@ -246,5 +246,58 @@ END
 exec sp_issueBook @issueId=1, @userId=1, @bookId=1, @issueDate= GetdATE(), @dueDate=DATEADD(MONTH,1,GETDATE()), @bookQty=10, @status='active';
 
 
-insert into Books values ('12 Rules of Power','AS.Dfran',34567890,'Motivation',12);
+----------------------------Manager store Procedure
+
+create procedure sp_AddManager
+@mfirstName varchar(50),
+@mlastName varchar(50),
+@email varchar(50),
+@pass varchar(50),
+@mobileNo varchar(12)
+as
+begin
+	insert into Managers(mfirstName,mlastName,email,pass,mobileNo)
+	values(@mfirstName, @mlastName, @email, @pass, @mobileNo);
+end
+
+create procedure sp_updateManager
+@mId int,
+@mfirstName varchar(50),
+@mlastName varchar(50),
+@email varchar(50),
+@pass varchar(50),
+@mobileNo varchar(12)
+ as
+ begin
+	update Managers
+	 set
+		mfirstName = @mfirstName,
+		mlastName = @mlastName,
+		email = @email,
+		pass = @pass,
+		mobileNo = @mobileNo
+	where mId = @mId;
+end
+
+create procedure sp_viewAllManager
+as 
+begin 
+	select * from Managers;
+end
+
+create procedure sp_viewManagerById
+@mId int 
+as 
+begin
+	select mId,mfirstName,mlastName,email,pass,mobileNo from Managers  
+	where mId = @mId;
+end 
+
+create procedure sp_deleteManager
+@mId int
+as 
+begin
+	delete from Managers
+	where mId = @mId;
+end
 
