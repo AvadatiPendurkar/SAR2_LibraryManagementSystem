@@ -10,9 +10,9 @@
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        //public bool Login(string username, string password)
-        //{
+        public bool Login(string username, string password)
+        {
 
-        //}
+        }
     }
 }
