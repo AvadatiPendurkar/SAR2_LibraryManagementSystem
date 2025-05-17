@@ -15,45 +15,51 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _booksDAL = booksDAL;
         }
 
-        [HttpGet]
+        [HttpGet("ViewAllBooks")]
         public IActionResult ViewAllBooks()
         {
             var books = _booksDAL.ViewAllBooks();
             return Ok(books);
         }
 
-        [HttpGet("{bookId}")]
-        public IActionResult ViewBookById(Books book)
+        [HttpGet("{id}")]
+        public IActionResult GetBookById(int id)
         {
-            _booksDAL.ViewBookById(book);
-            return Ok(book);
+            var book = _booksDAL.ViewBookById(id);  
+
+            if (book == null)
+            {
+                return NotFound(new { Message = $"Book with ID {id} not found." });
+            }
+
+            return Ok(book);  
         }
 
-        [HttpPost("register")]
+        [HttpPost("AddBook")]
         public IActionResult AddBooks(Books books)
         {
             _booksDAL.AddBooks(books);
-            return Ok("User added successfully");
+            return Ok("Book added successfully");
         }
 
         [HttpPut("update")]
         public IActionResult UpdateBooks(Books book)
         {
             if (book.bookId <= 0)
-                return BadRequest("Invalid user ID.");
+                return BadRequest("Invalid Book ID.");
 
             _booksDAL.UpdateBooks(book);
-            return Ok(new { success = true, message = "User updated successfully." });
+            return Ok(new { success = true, message = "Book updated successfully." });
         }
 
         [HttpDelete("{bookId}")]
-        public IActionResult DeleteUser(int bookId)
+        public IActionResult DeleteBooks(int bookId)
         {
             if (bookId <= 0)
-                return BadRequest("Invalid user ID.");
+                return BadRequest("Invalid Book ID.");
 
             _booksDAL.DeleteBooks(bookId);
-            return Ok(new { success = true, message = "User deleted successfully." });
+            return Ok(new { success = true, message = "Book deleted successfully." });
         }
         
     }
