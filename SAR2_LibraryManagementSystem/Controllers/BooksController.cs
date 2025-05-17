@@ -60,7 +60,6 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
             _booksDAL.DeleteBooks(bookId);
             return Ok(new { success = true, message = "Book deleted successfully." });
-        }
-        
+        }        
     }
 }
