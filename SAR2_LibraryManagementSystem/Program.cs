@@ -41,6 +41,16 @@ namespace SAR2_LibraryManagementSystem
                     };
                 });
 
+            builder.Services.AddCors(cors =>
+            {
+                cors.AddPolicy("cors", policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
