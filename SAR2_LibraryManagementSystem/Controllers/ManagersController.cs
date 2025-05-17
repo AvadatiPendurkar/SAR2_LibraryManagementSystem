@@ -38,10 +38,19 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 return BadRequest("Invalid Manager Id");
 
             _managerDAL.UpdateManager(managers);
-            return Ok(new { succes = true,  message = "Managers updated successfully." });
-            
-            
+            return Ok(new { succes = true, message = "Managers updated successfully." });
 
+
+
+        }
+        [HttpDelete("{mId}")]
+        public IActionResult DeleteManager(int mId)
+        {
+            if (mId <= 0)
+            { return BadRequest("Invalid Id"); }
+
+            _managerDAL.DeleteManager(mId);
+            return Ok(new { succes = true, message = "Manager Deleted Succesfully" });
         }
     }
 
