@@ -187,3 +187,64 @@ BEGIN
     FROM Books
     WHERE bookId = @bookId;
 END
+
+----------------------Issue book stored proc
+alter proc sp_issueBook
+@issueId INT,
+@userId INT,
+@bookId int,
+@issueDate datetime,
+@dueDate datetime,
+@bookQty int ,
+@status varchar(50)
+as
+begin
+	INSERT INTO IssueBook (issueId, userId, bookId, issueDate, dueDate, bookQty, status)
+	VALUES (@issueId, @userId, @bookId, @issueDate, DATEADD(MONTH,1,GETDATE()), @bookQty, @status)
+end
+
+CREATE PROCEDURE sp_updateIssueBook
+    @issueId INT,
+	@userId INT,
+	@bookId int,
+	@bookQty int
+AS
+BEGIN
+    UPDATE IssueBook
+    SET
+		userId = @userId,
+		bookId = @bookId,
+        bookQty = @bookQty
+    WHERE issueId = @issueId;
+END
+
+CREATE PROCEDURE sp_viewAllIssueBook
+as
+BEGIN
+    SELECT issueId, userId, bookId, issueDate, dueDate, returnDate, bookQty, status
+    FROM IssueBook;
+END
+
+CREATE PROCEDURE sp_deleteIssueBook
+    @issueId INT
+AS
+BEGIN
+    DELETE FROM IssueBook
+    WHERE issueId = @issueId;
+END
+
+CREATE PROCEDURE sp_viewIssueBookById
+    @issueId INT
+AS
+BEGIN
+    SELECT 
+        issueId, userId, bookId, issueDate, dueDate, returnDate, bookQty, status
+    FROM IssueBook
+    WHERE issueId = @issueId;
+END
+
+exec sp_issueBook @issueId=1, @userId=1, @bookId=1, @issueDate= GetdATE(), @dueDate=DATEADD(MONTH,1,GETDATE()), @bookQty=10, @status='active';
+
+
+insert into Books values ('12 Rules of Power','AS.Dfran',34567890,'Motivation',12);
+

@@ -42,7 +42,7 @@ namespace SAR2_LibraryManagementSystem.Model
             {
                 con.Open();
 
-                using (var cmd = new SqlCommand("", con))
+                using (var cmd = new SqlCommand("sp_updateIssueBook", con))
                 {
                     cmd.Parameters.AddWithValue("@issueId", issueBook.issueId);
                     cmd.Parameters.AddWithValue("@userId", issueBook.userId);
@@ -63,7 +63,7 @@ namespace SAR2_LibraryManagementSystem.Model
             {
                 con.Open();
 
-                using (var cmd = new SqlCommand("",con))
+                using (var cmd = new SqlCommand("sp_deleteIssueBook", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@issueId", issueBookId);
@@ -79,7 +79,7 @@ namespace SAR2_LibraryManagementSystem.Model
             var IssueBooks = new List<IssueBook>();
             using (var con = new SqlConnection(_connectionString))
             {
-                var cmd = new SqlCommand("", con);
+                var cmd = new SqlCommand("sp_viewAllIssueBook", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 con.Open();
 
@@ -110,7 +110,7 @@ namespace SAR2_LibraryManagementSystem.Model
             {
                 con.Open();
 
-                using (var cmd = new SqlCommand("", con))
+                using (var cmd = new SqlCommand("sp_viewIssueBookById", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@issueId", issueId);
