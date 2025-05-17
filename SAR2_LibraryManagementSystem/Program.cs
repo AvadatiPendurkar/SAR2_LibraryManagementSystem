@@ -22,6 +22,7 @@ namespace SAR2_LibraryManagementSystem
             builder.Services.AddScoped<DataAccessLayer>();
             builder.Services.AddScoped<ManagerDAL>();
             builder.Services.AddScoped<BooksDAL>();
+            builder.Services.AddScoped<IssueBookDAL>();
 
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
