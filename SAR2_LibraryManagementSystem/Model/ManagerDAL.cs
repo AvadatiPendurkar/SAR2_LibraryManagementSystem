@@ -17,10 +17,12 @@ public class ManagerDAL
         using (var conn = new SqlConnection(_connectionString))
         {
 
-            string insertquery = "INSERT INTO Managers (mfirstName, mlastName, email, pass, mobileNo) VALUES (@mfirstName, @mlastName, @email,@mobileNo, @pass)";
+           // string insertquery = "INSERT INTO Managers (mfirstName, mlastName, email, pass, mobileNo) VALUES (@mfirstName, @mlastName, @email,@mobileNo, @pass)";
+
             conn.Open();
-            using (var cmd = new SqlCommand(insertquery, conn))
+            using (var cmd = new SqlCommand("ps_AddManager", conn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@mfirstName", manager.mfirstName);
                 cmd.Parameters.AddWithValue("@mlastName", manager.mlastName);
                 cmd.Parameters.AddWithValue("@email", manager.email);
@@ -52,11 +54,12 @@ public class ManagerDAL
                 cmd.Parameters.AddWithValue("@mobileNo", manager.mobileNo);
                 cmd.Parameters.AddWithValue("@pass", manager.pass);
 
+
             }
 
         }
     }
-
+    //show All Manager
     public List<Managers> GetAllManagers() {
         var manager = new List<Managers>();
         
@@ -72,9 +75,9 @@ public class ManagerDAL
                 {
                     manager.Add(new Managers
                     {
-                        mId = Convert.ToInt32(reader["userId"]),
-                        mfirstName = reader["firstName"].ToString(),
-                        mlastName = reader["lastName"].ToString(),
+                        mId = Convert.ToInt32(reader["mId"]),
+                        mfirstName = reader["mfirstName"].ToString(),
+                        mlastName = reader["mlastName"].ToString(),
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString()
@@ -85,7 +88,8 @@ public class ManagerDAL
         }
         return manager;
     }
-
+    //get by Id
+   
 
 
 
