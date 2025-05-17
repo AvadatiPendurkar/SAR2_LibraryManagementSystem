@@ -23,5 +23,26 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok("Manager added successfully");
 
         }
+        [HttpGet]
+        public IActionResult GetAllManagers()
+        {
+            var manager = _managerDAL.GetAllManagers();
+            return Ok(manager);
+
+        }
+
+        [HttpPut]
+        public IActionResult UpdateManager(Managers managers)
+        {
+            if (managers.mId <= 0)
+                return BadRequest("Invalid Manager Id");
+
+            _managerDAL.UpdateManager(managers);
+            return Ok(new { succes = true,  message = "Managers updated successfully." });
+            
+            
+
+        }
     }
+
 }
