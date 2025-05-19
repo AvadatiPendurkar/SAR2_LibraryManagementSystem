@@ -12,7 +12,7 @@ public class ManagerDAL
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
-
+    //add manager
     public void AddManagers(Managers manager)
     {
         using (var conn = new SqlConnection(_connectionString))
