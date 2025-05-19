@@ -52,6 +52,17 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _managerDAL.DeleteManager(mId);
             return Ok(new { succes = true, message = "Manager Deleted Succesfully" });
         }
-    }
 
+        [HttpGet("{id}")]
+        public IActionResult GetManagerById(int id)
+        {
+            var manager = _managerDAL.GetManagerById(id);
+            if(manager == null)
+            {
+                return NotFound(new {message =$"Manager with ID {id} not found." });
+
+            }
+            return Ok(manager);
+        }
+    }
 }

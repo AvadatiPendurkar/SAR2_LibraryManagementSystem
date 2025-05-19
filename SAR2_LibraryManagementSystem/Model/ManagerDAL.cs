@@ -92,25 +92,37 @@ public class ManagerDAL
     }
     //view by Id
 
-    public void GetManagerById(Managers managers)
+    public Managers GetManagerById(int id)
     {
-
+        Managers manager = null;
         using (var conn = new SqlConnection(_connectionString))
         {
             conn.Open();
             using (var cmd = new SqlCommand("ps_viewManagerById", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@mId", managers.mId);
-                cmd.Parameters.AddWithValue("@mfirstName", managers.mlastName);
-                cmd.Parameters.AddWithValue("@mlastName", managers.mlastName);
-                cmd.Parameters.AddWithValue("@email", managers.email);
-                cmd.Parameters.AddWithValue("@pass", managers.pass);
-                cmd.Parameters.AddWithValue("@mobileNo", managers.mobileNo);
+                cmd.Parameters.AddWithValue("@id", id);
+                using (var reader = cmd.ExecuteReader())
+                {
 
-                cmd.ExecuteNonQuery();
+                    if (reader.Read())
+                    {
+                        manager = new Managers
+                        {
+                            mId = Convert.ToInt16(reader["mid"]),
+                            mfirstName = reader["mfirstName"].ToString(),
+                            mlastName = reader["mlastName"].ToString(),
+                            email = reader["email"].ToString(),
+                            pass = reader["pass"].ToString(),
+                            mobileNo = reader["mobileNo"].ToString()
+                        };
+
+                    }
+                   
+                }
             }
         }
+        return manager;
     }
     // delete manager by Id
     public void DeleteManager(int mId)
