@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAR2_LibraryManagementSystem.Model;
 
@@ -15,7 +16,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _booksDAL = booksDAL;
         }
 
-        [HttpGet("ViewAllBooks")]
+        [HttpGet("ViewAllBooks")]        
         public IActionResult ViewAllBooks()
         {
             var books = _booksDAL.ViewAllBooks();
@@ -36,6 +37,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
         [HttpPost("AddBook")]
+        [Authorize(Roles = "Admin, Manager")]
         public IActionResult AddBooks(Books books)
         {
             _booksDAL.AddBooks(books);
@@ -43,6 +45,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin, Manager")]
         public IActionResult UpdateBooks(Books book)
         {
             if (book.bookId <= 0)
@@ -53,6 +56,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
         [HttpDelete("{bookId}")]
+        [Authorize(Roles = "Admin, Manager")]
         public IActionResult DeleteBooks(int bookId)
         {
             if (bookId <= 0)
