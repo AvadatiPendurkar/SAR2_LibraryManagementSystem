@@ -32,15 +32,15 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "Issued book updated successfully." });
         }
 
-        [HttpDelete("{issueId}")]
-        public IActionResult DeleteIssueBooks(int issueId)
-        {
-            if (issueId <= 0)
-                return BadRequest("Invalid issue book id");
+        //[HttpDelete("{issueId}")]
+        //public IActionResult DeleteIssueBooks(int issueId)
+        //{
+        //    if (issueId <= 0)
+        //        return BadRequest("Invalid issue book id");
 
-            _issueBookDAL.DeleteIssueBook(issueId);
-            return Ok(new { success = true, message = "Issue book deleted successfully" });
-        }
+        //    _issueBookDAL.DeleteIssueBook(issueId);
+        //    return Ok(new { success = true, message = "Issue book deleted successfully" });
+        //}
 
         [HttpGet("ViewAllIssueBook")]
         public IActionResult ViewAllIssueBook()
