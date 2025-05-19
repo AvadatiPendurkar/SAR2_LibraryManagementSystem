@@ -1,4 +1,6 @@
-﻿namespace SAR2_LibraryManagementSystem.Model
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace SAR2_LibraryManagementSystem.Model
 {
     public class LoginDAL
     {
@@ -10,9 +12,9 @@
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public bool Login(string username, string password)
-        {
-
-        }
+        //public bool Login(string username, string password)
+        //{
+        //    return;
+        //}
     }
 }

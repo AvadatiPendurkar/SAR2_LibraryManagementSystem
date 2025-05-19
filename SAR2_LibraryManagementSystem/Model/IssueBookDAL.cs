@@ -24,8 +24,8 @@ namespace SAR2_LibraryManagementSystem.Model
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@userId", issueBook.userId);
                     cmd.Parameters.AddWithValue("@bookId", issueBook.bookId);
-                    //cmd.Parameters.AddWithValue("@issueDate", issueBook.issueDate);
-                    //cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
+                    cmd.Parameters.AddWithValue("@issueDate", issueBook.issueDate);
+                    cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
                     cmd.Parameters.AddWithValue("@status", issueBook.status);
 
@@ -42,37 +42,38 @@ namespace SAR2_LibraryManagementSystem.Model
             {
                 con.Open();
 
-                using (var cmd = new SqlCommand("sp_updateIssueBook", con))
+                using (var cmd = new SqlCommand("sp_updateIssueBook1", con))
                 {
+                    cmd.CommandType= CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@issueId", issueBook.issueId);
                     cmd.Parameters.AddWithValue("@userId", issueBook.userId);
                     cmd.Parameters.AddWithValue("@bookId", issueBook.bookId);
                     //cmd.Parameters.AddWithValue("@issueDate", issueBook.issueDate);
                     //cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
-                    cmd.Parameters.AddWithValue("@status", issueBook.status);
+                    //cmd.Parameters.AddWithValue("@status", issueBook.status);
 
                     int affectedrow = cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void DeleteIssueBook(int issueBookId)
-        {
-            using (var con = new SqlConnection(_connectionString))
-            {
-                con.Open();
+        //public void DeleteIssueBook(int issueBookId)
+        //{
+        //    using (var con = new SqlConnection(_connectionString))
+        //    {
+        //        con.Open();
 
-                using (var cmd = new SqlCommand("sp_deleteIssueBook", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@issueId", issueBookId);
+        //        using (var cmd = new SqlCommand("sp_deleteIssueBook", con))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@issueId", issueBookId);
 
-                    int affectedrow = cmd.ExecuteNonQuery();
+        //            int affectedrow = cmd.ExecuteNonQuery();
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public List<IssueBook> ViewIssuesBooks()
         {

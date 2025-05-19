@@ -12,7 +12,7 @@ public class ManagerDAL
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
-
+    //add manager
     public void AddManagers(Managers manager)
     {
         using (var conn = new SqlConnection(_connectionString))
@@ -21,7 +21,7 @@ public class ManagerDAL
             // string insertquery = "INSERT INTO Managers (mfirstName, mlastName, email, pass, mobileNo) VALUES (@mfirstName, @mlastName, @email,@mobileNo, @pass)";
 
             conn.Open();
-            using (var cmd = new SqlCommand("ps_AddManager", conn))
+            using (var cmd = new SqlCommand("sp_AddManager", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@mfirstName", manager.mfirstName);
@@ -44,10 +44,11 @@ public class ManagerDAL
         {
 
             conn.Open();
-            string updateQuery = "UPDATE Managers  SET mfirstName = @mfirstName, mlastName = @mlastName, email = @email, mobileNo =@mobileNo = @pass WHERE mId = @mId";
+           // string updateQuery = "UPDATE Managers  SET mfirstName = @mfirstName, mlastName = @mlastName, email = @email, mobileNo =@mobileNo = @pass WHERE mId = @mId";
 
-            using (var cmd = new SqlCommand(updateQuery, conn))
+            using (var cmd = new SqlCommand("sp_updateManager", conn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@mId", manager.mId);
                 cmd.Parameters.AddWithValue("@mfirstName", manager.mfirstName);
                 cmd.Parameters.AddWithValue("@mlastName", manager.mlastName);
@@ -55,6 +56,7 @@ public class ManagerDAL
                 cmd.Parameters.AddWithValue("@mobileNo", manager.mobileNo);
                 cmd.Parameters.AddWithValue("@pass", manager.pass);
 
+                cmd.ExecuteNonQuery ();
 
             }
 
@@ -68,7 +70,7 @@ public class ManagerDAL
         using (var conn = new SqlConnection(_connectionString))
         {
             //  string query = "SELECT * FROM Managers";
-            var command = new SqlCommand("sp_getAllManager", conn);
+            var command = new SqlCommand("sp_viewAllManager", conn);
             conn.Open();
             command.CommandType = CommandType.StoredProcedure;
             using (var reader = command.ExecuteReader())
@@ -98,7 +100,7 @@ public class ManagerDAL
         using (var conn = new SqlConnection(_connectionString))
         {
             conn.Open();
-            using (var cmd = new SqlCommand("ps_viewManagerById", conn))
+            using (var cmd = new SqlCommand("sp_viewManagerById", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@id", id);
