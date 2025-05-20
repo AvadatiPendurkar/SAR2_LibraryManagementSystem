@@ -66,7 +66,7 @@ namespace SAR2_LibraryManagementSystem
 
 
             app.MapControllers();
-
+            app.UseCors("cors");
             app.Run();
         }
     }
