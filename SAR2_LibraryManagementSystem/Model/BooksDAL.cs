@@ -18,6 +18,7 @@ public class BooksDAL
     public List<Books> ViewAllBooks()
     {
         var books = new List<Books>();
+
         using (var con = new SqlConnection(_connectionString))
         {
             var cmd = new SqlCommand("sp_viewAllBooks", con);
@@ -35,7 +36,8 @@ public class BooksDAL
                         authorName = reader["authorName"].ToString(),
                         isbn = reader["isbn"].ToString(),
                         genre = reader["genre"].ToString(),
-                        quantity = Convert.ToInt32(reader["quantity"])
+                        quantity = Convert.ToInt32(reader["quantity"]),
+                        Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
                     });
                 }             
             }
@@ -80,24 +82,28 @@ public class BooksDAL
     // Add new book
     public void AddBooks(Books book)
     {
-        using (var con = new SqlConnection(_connectionString))
-        {
-            con.Open();
-
-            //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
-            using (var cmd = new SqlCommand("sp_addBooks", con))
+       
+            byte[] imageBytes = Convert.FromBase64String(book.Base64Image);
+            using (var con = new SqlConnection(_connectionString))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@bookName", book.bookName);
-                cmd.Parameters.AddWithValue("@authorName", book.authorName);
-                cmd.Parameters.AddWithValue("@isbn", book.isbn);
-                cmd.Parameters.AddWithValue("@genre", book.genre);
-                cmd.Parameters.AddWithValue("@quantity", book.quantity);
+                con.Open();
 
-                int affectedrow = cmd.ExecuteNonQuery();
+                //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
+                using (var cmd = new SqlCommand("sp_addBooks", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@bookName", book.bookName);
+                    cmd.Parameters.AddWithValue("@authorName", book.authorName);
+                    cmd.Parameters.AddWithValue("@isbn", book.isbn);
+                    cmd.Parameters.AddWithValue("@genre", book.genre);
+                    cmd.Parameters.AddWithValue("@quantity", book.quantity);
+                    cmd.Parameters.AddWithValue("@bookImage", imageBytes);
+
+                    int affectedrow = cmd.ExecuteNonQuery();
+                }
             }
         }
-    }
+   
     //update books
     public void UpdateBooks(Books book)
     {

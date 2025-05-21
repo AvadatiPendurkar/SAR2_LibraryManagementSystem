@@ -37,7 +37,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
         [HttpPost("AddBook")]
-        [Authorize(Roles = "Admin, Manager")]
+       // [Authorize(Roles = "Admin, Manager")]
         public IActionResult AddBooks(Books books)
         {
             _booksDAL.AddBooks(books);

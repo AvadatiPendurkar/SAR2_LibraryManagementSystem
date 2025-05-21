@@ -3,15 +3,20 @@ create database SAR2_DB
 use SAR2_DB
 
 ---create table book
- CREATE TABLE Books (
+
+
+ create TABLE Books (
     bookId INT identity(1,1) PRIMARY KEY,
     bookName VARCHAR(255) NOT NULL,
     authorName varchar(255),
     isbn VARCHAR(20) UNIQUE,
     genre varchar(200),
-    quantity INT,  
+    quantity INT 	
 );
 
+select * from Books
+
+alter table Books alter column bookImage varbinary(max)
 ---create table Users
 
 CREATE TABLE Users (
@@ -140,19 +145,22 @@ BEGIN
     WHERE bookId = @bookId;
 END
 
-CREATE PROCEDURE sp_addBooks
+alter PROCEDURE sp_addBooks
     @bookName NVARCHAR(100),
     @authorName NVARCHAR(100),
     @isbn NVARCHAR(50),
     @genre NVARCHAR(50),
-    @quantity INT
+    @quantity INT,
+	@bookImage varbinary(max)
 AS
 BEGIN
-    INSERT INTO Books (bookName, authorName, isbn, genre, quantity)
-    VALUES (@bookName, @authorName, @isbn, @genre, @quantity);
+    INSERT INTO Books (bookName, authorName, isbn, genre, quantity,bookImage)
+    VALUES (@bookName, @authorName, @isbn, @genre, @quantity,@bookImage);
 END
 
-CREATE PROCEDURE sp_viewAllBooks
+exec sp_addBooks @bookName='shamchi Aai', @authorName='sane guruji', @isbn='ddtfthj3f5', @genre='jeevangatha', @quantity='12',@bookImage='a.jpg';
+
+alter PROCEDURE sp_viewAllBooks
 AS
 BEGIN
     SELECT 
@@ -161,7 +169,8 @@ BEGIN
         authorName,
         isbn,
         genre,
-        quantity
+        quantity,
+		bookImage
     FROM Books;
 END
 
@@ -188,9 +197,10 @@ BEGIN
     WHERE bookId = @bookId;
 END
 
+select * from Books
+select * from IssueBook
 ----------------------Issue book stored proc
 alter proc sp_issueBook
-@issueId INT,
 @userId INT,
 @bookId int,
 @issueDate datetime,
@@ -199,11 +209,11 @@ alter proc sp_issueBook
 @status varchar(50)
 as
 begin
-	INSERT INTO IssueBook (issueId, userId, bookId, issueDate, dueDate, bookQty, status)
-	VALUES (@issueId, @userId, @bookId, @issueDate, DATEADD(MONTH,1,GETDATE()), @bookQty, @status)
+	INSERT INTO IssueBook (userId, bookId, issueDate, dueDate, bookQty, status)
+	VALUES (@userId, @bookId, @issueDate, DATEADD(MONTH,1,GETDATE()), @bookQty, @status)
 end
 
-CREATE PROCEDURE sp_updateIssueBook
+create PROCEDURE sp_updateIssueBook1
     @issueId INT,
 	@userId INT,
 	@bookId int,
