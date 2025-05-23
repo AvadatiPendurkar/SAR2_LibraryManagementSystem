@@ -20,15 +20,6 @@ namespace SAR2_LibraryManagementSystem.Controllers
         {
             _dataAccessLayer.AddUser(user);
             return Ok("User added successfully");
-            EmailService.SendEmail(user.email, "Account Approved", $"""
-                        <html>
-                            <body>
-                                <h2>Hi, {user.firstName} {user.lastName}</h2>
-                                <h3>You Account has been approved by admin.</h3>
-                                <h3>Now you can login to your account.</h3>
-                            </body>
-                        </html>
-                    """);
         }
 
         [HttpPost("login")]
