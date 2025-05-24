@@ -16,7 +16,8 @@ use SAR2_DB
 
 select * from Books
 
-alter table Books alter column bookImage varbinary(max)
+
+
 ---create table Users
 
 CREATE TABLE Users (
@@ -311,3 +312,70 @@ begin
 	where mId = @mId;
 end
 
+
+INSERT INTO Books (bookName, authorName, isbn, genre, quantity, bookImage)
+VALUES
+('To Kill a Mockingbird', 'Harper Lee', '9780061120084', 'Classic', 15, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('1984', 'George Orwell', '9780451524935', 'Dystopian', 20, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 'Classic', 12, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Pride and Prejudice', 'Jane Austen', '9781503290564', 'Romance', 18, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='));
+
+('The Catcher in the Rye', 'J.D. Salinger', '9780316769488', 'Coming-of-age', 10, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('To the Lighthouse', 'Virginia Woolf', '9780156907392', 'Modernist', 8, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Brave New World', 'Aldous Huxley', '9780060850524', 'Science Fiction', 14, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Hobbit', 'J.R.R. Tolkien', '9780547928227', 'Fantasy', 25, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Fahrenheit 451', 'Ray Bradbury', '9781451673319', 'Dystopian', 16, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Moby-Dick', 'Herman Melville', '9781503280787', 'Adventure', 9, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Lord of the Rings', 'J.R.R. Tolkien', '9780544003415', 'Fantasy', 22, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Alchemist', 'Paulo Coelho', '9780062315007', 'Fantasy', 30, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Da Vinci Code', 'Dan Brown', '9780307474278', 'Mystery', 17, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Hunger Games', 'Suzanne Collins', '9780439023481', 'Dystopian', 28, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Girl with the Dragon Tattoo', 'Stieg Larsson', '9780307269751', 'Crime', 13, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Gone Girl', 'Gillian Flynn', '9780307588364', 'Thriller', 19, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Book Thief', 'Markus Zusak', '9780375831003', 'Historical Fiction', 11, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('The Silent Patient', 'Alex Michaelides', '9781250301697', 'Psychological Thriller', 23, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Educated', 'Tara Westover', '9780399590504', 'Memoir', 16, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Sapiens', 'Yuval Noah Harari', '9780062316097', 'Nonfiction', 27, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==')),
+
+('Atomic Habits', 'James Clear', '9780735211292', 'Self-help', 35, 
+CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='));
+
+select * from Books

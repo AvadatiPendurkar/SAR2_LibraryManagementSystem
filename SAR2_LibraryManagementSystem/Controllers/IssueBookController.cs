@@ -15,14 +15,14 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _issueBookDAL = issueBookDAL;
         }
 
-        [HttpPost]
+        [HttpPost("AddIssuBook")]
         public IActionResult AddIssueBooks(IssueBook issueBook)
         {
             _issueBookDAL.AddIssueBooks(issueBook);
             return Ok("Book Issued Successfully");
         }
 
-        [HttpPut]
+        [HttpPut("updateIssuBook")]
         public IActionResult UpdateIssueBooks(IssueBook issueBook)
         {
             if (issueBook.issueId <= 0)
