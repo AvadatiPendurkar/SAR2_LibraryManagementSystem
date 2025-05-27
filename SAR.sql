@@ -29,6 +29,8 @@ CREATE TABLE Users (
 	mobileNo varchar(20) not null
 );
 
+alter table Users add role varchar(50)
+select * from Users
 ----create table issueBook
 
 CREATE TABLE IssueBook (
@@ -56,27 +58,29 @@ create table Managers
 
  ---registerUser
 
-create procedure sp_addUser1
+alter procedure sp_addUser1
 @firstName varchar(200),
 @lastName varchar(200),
 @email varchar(max),
 @pass varchar(20),
-@mobileNo varchar(20)
+@mobileNo varchar(20),
+@role varchar(50)
 as 
 begin
-insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo);
+insert into Users(firstName, lastName, email, pass, mobileNo,role) values (@firstName, @lastName, @email, @pass, @mobileNo,@role);
 end
 
-exec sp_addUser1 @firstName='abc',@lastName='demo',@email='demo@gmail.com',@pass='demo',@mobileNo='9999999999'
+exec sp_addUser1 @firstName='abc1',@lastName='demo1',@email='demo1@gmail.com',@pass='demo1',@mobileNo='9999999999'
 
 
 ---userlogin
-CREATE PROCEDURE sp_LoginUser
+alter PROCEDURE sp_LoginUser
     @email varchar(max),
-    @pass varchar(20)
+    @pass varchar(20),
+	@role varchar(50)
 AS
 BEGIN
-    SELECT UserID, firstName, lastName, email, mobileNo
+    SELECT UserID, firstName, lastName, email, mobileNo,role
     FROM Users
     WHERE email = @email AND pass = @pass
 END
@@ -102,10 +106,10 @@ BEGIN
 END
 select * from Users
 
-CREATE PROCEDURE sp_getAllUsers
+alter PROCEDURE sp_getAllUsers
 AS
 BEGIN
-    SELECT userId, firstName, lastName, email, pass, mobileNo FROM Users
+    SELECT userId, firstName, lastName, email, pass, mobileNo,role FROM Users
 END
 
 CREATE PROCEDURE sp_deleteUser1

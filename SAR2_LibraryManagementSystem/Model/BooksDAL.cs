@@ -37,6 +37,7 @@ public class BooksDAL
                         isbn = reader["isbn"].ToString(),
                         genre = reader["genre"].ToString(),
                         quantity = Convert.ToInt32(reader["quantity"]),
+
                         Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
                     });
                 }             
@@ -60,7 +61,7 @@ public class BooksDAL
 
                 using (var reader = cmd.ExecuteReader())
                 {
-                    if (reader.Read())  
+                    while (reader.Read())  
                     {
                         book = new Books
                         {
@@ -69,7 +70,8 @@ public class BooksDAL
                             authorName = reader["authorName"].ToString(),
                             isbn = reader["isbn"].ToString(),
                             genre = reader["genre"].ToString(),
-                            quantity = Convert.ToInt32(reader["quantity"])
+                            quantity = Convert.ToInt32(reader["quantity"]),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
                         };
                     }
                 }
@@ -99,6 +101,7 @@ public class BooksDAL
                     cmd.Parameters.AddWithValue("@quantity", book.quantity);
                     cmd.Parameters.AddWithValue("@bookImage", imageBytes);
 
+
                     int affectedrow = cmd.ExecuteNonQuery();
                 }
             }
@@ -107,6 +110,7 @@ public class BooksDAL
     //update books
     public void UpdateBooks(Books book)
     {
+        byte[] imageBytes = Convert.FromBase64String(book.Base64Image);
         using (var con= new SqlConnection(_connectionString))
         {
             con.Open();
@@ -121,6 +125,7 @@ public class BooksDAL
                 cmd.Parameters.AddWithValue("@isbn", book.isbn);
                 cmd.Parameters.AddWithValue("@genre", book.genre);
                 cmd.Parameters.AddWithValue("@quantity", book.quantity);
+                cmd.Parameters.AddWithValue("@bookImage", imageBytes);
 
                 int affectedrow = cmd.ExecuteNonQuery();
 
