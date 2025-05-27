@@ -14,10 +14,12 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         public readonly IConfiguration config;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, EmailService emailService)
         {
             config = configuration;
+            EmailService = emailService;
         }
+        public EmailService EmailService { get; }
 
         [HttpPost]
         [Route("Login")]

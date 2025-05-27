@@ -10,10 +10,13 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly DataAccessLayer _dataAccessLayer;
 
-        public UsersController(DataAccessLayer dataAccessLayer)
+        public UsersController(DataAccessLayer dataAccessLayer, EmailService emailService)
         {
             _dataAccessLayer = dataAccessLayer;
+            EmailService = emailService;
         }
+        public EmailService EmailService { get; }
+
 
         [HttpPost("register")]
         public IActionResult AddUser(Users user)

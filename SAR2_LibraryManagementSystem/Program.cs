@@ -24,6 +24,8 @@ namespace SAR2_LibraryManagementSystem
             builder.Services.AddScoped<BooksDAL>();
             builder.Services.AddScoped<IssueBookDAL>();
 
+            builder.Services.AddScoped<EmailService>();
+
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
