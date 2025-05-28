@@ -27,7 +27,7 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
-                cmd.Parameters.AddWithValue("@role", user.role);
+                
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
@@ -80,7 +80,7 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
-                cmd.Parameters.AddWithValue("@role", user.role);
+               
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
@@ -109,7 +109,7 @@ public class DataAccessLayer
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString(),
-                        role = reader["role"].ToString()
+                       
                     });
                 }
             }
@@ -160,7 +160,7 @@ public class DataAccessLayer
                             email = reader["email"].ToString(),
                             pass = reader["pass"].ToString(),
                             mobileNo = reader["mobileNo"].ToString(),
-                            role = reader["role"].ToString()
+                           
 
                         };
                     }

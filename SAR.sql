@@ -131,13 +131,14 @@ END
 
 ----------------------books stored proc
 
-CREATE PROCEDURE sp_updateBook
+alter PROCEDURE sp_updateBook
     @bookId INT,
     @bookName NVARCHAR(100),
     @authorName NVARCHAR(100),
     @isbn NVARCHAR(50),
     @genre NVARCHAR(50),
-    @quantity INT
+    @quantity INT,
+	@bookImage varbinary(max)
 AS
 BEGIN
     UPDATE Books
@@ -146,7 +147,8 @@ BEGIN
         authorName = @authorName,
         isbn = @isbn,
         genre = @genre,
-        quantity = @quantity
+        quantity = @quantity,
+		bookImage=@bookImage
     WHERE bookId = @bookId;
 END
 
