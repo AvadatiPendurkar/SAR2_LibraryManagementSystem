@@ -23,7 +23,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok("Manager added successfully");
 
         }
-        [HttpGet]
+        [HttpGet("get")]
         public IActionResult GetAllManagers()
         {
             var manager = _managerDAL.GetAllManagers();
@@ -31,7 +31,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("update/{mId}")]
         public IActionResult UpdateManager(Managers managers)
         {
             if (managers.mId <= 0)
@@ -43,7 +43,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
 
         }
-        [HttpDelete("{mId}")]
+        [HttpDelete("delete/{mId}")]
         public IActionResult DeleteManager(int mId)
         {
             if (mId <= 0)
@@ -53,7 +53,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { succes = true, message = "Manager Deleted Succesfully" });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getById{id}")]
         public IActionResult GetManagerById(int id)
         {
             var manager = _managerDAL.GetManagerById(id);
