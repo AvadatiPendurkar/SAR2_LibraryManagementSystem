@@ -15,7 +15,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _managerDAL = managerDAL;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public IActionResult AddManagers(Managers manager)
         {
 
