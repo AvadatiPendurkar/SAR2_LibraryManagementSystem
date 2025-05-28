@@ -19,8 +19,18 @@ namespace SAR2_LibraryManagementSystem.Controllers
         public IActionResult AddManagers(Managers manager)
         {
 
-            _managerDAL.AddManagers(manager);
-            return Ok("Manager added successfully");
+            //_managerDAL.AddManagers(manager);
+            //return Ok(new { message = "Manager registered successfully" });
+            try
+            {
+                // your ADO.NET insert logic here...
+                _managerDAL.AddManagers(manager);
+                return Ok(new { message = "Manager registered successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
         }
         [HttpGet("get")]
