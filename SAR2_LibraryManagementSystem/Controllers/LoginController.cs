@@ -5,6 +5,8 @@ using SAR2_LibraryManagementSystem.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Data.SqlClient;
+using SAR2_LibraryManagementSystem.Model;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -14,40 +16,84 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         public readonly IConfiguration config;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, EmailService emailService)
         {
             config = configuration;
+            EmailService = emailService;
         }
+        public EmailService EmailService { get; }
 
-        [HttpPost]
-        [Route("Login")]
-        public string GenToken(Login admin)
+        //    [HttpPost]
+        //    [Route("Login")]
+        //    public string GenToken(Login admin)
+        //    {
+        //        string token = "";
+        //        if (admin.email == "admin@gmail.com" && admin.password == "123")
+        //        {
+        //            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
+        //            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        //            var claims = new[]
+        //            {
+        //                new Claim("Email",admin.email),
+        //                new Claim("role","Admin"),
+        //                new Claim("role","User"),
+        //                new Claim("role","Manager")
+        //            };
+
+        //            var tokenFinal = new JwtSecurityToken(config["Jwt:Issuer"],
+        //                config["Jwt:Issuer"],
+        //                claims,
+        //                expires: DateTime.Now.AddMinutes(120),
+        //                signingCredentials: credentials
+        //            );
+
+        //            token = new JwtSecurityTokenHandler().WriteToken(tokenFinal);
+
+        //        }
+        //        return token;
+        //    }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] Login model)
         {
-            string token = "";
-            if (admin.email == "admin@gmail.com" && admin.password == "123")
+            using (SqlConnection con = new SqlConnection(config.GetConnectionString("DefaultConnection")))
             {
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+                con.Open();
 
-                var claims = new[]
+                // Check Manager table
+                string managerQuery = "SELECT * FROM Managers WHERE email = @Email AND pass = @Password";
+                SqlCommand cmd = new SqlCommand(managerQuery, con);
+                cmd.Parameters.AddWithValue("@Email", model.email);
+                cmd.Parameters.AddWithValue("@Password", model.password); // Ideally use hashed password
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
                 {
-                    new Claim("Email",admin.email),
-                    new Claim("role","Admin"),
-                    new Claim("role","User"),
-                    new Claim("role","Manager")
-                };
+                    // Manager found
+                    return Ok(new { status = "success", userType = "manager" });
+                }
+                reader.Close();
 
-                var tokenFinal = new JwtSecurityToken(config["Jwt:Issuer"],
-                    config["Jwt:Issuer"],
-                    claims,
-                    expires: DateTime.Now.AddMinutes(120),
-                    signingCredentials: credentials
-                );
+                // Check User table
+                string userQuery = "SELECT * FROM [Users] WHERE email = @Email AND pass = @Password";
+                cmd = new SqlCommand(userQuery, con);
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@Email", model.email);
+                cmd.Parameters.AddWithValue("@Password", model.password);
 
-                token = new JwtSecurityTokenHandler().WriteToken(tokenFinal);
+                reader = cmd.ExecuteReader();
 
+                if (reader.Read())
+                {
+                    // User found
+                    return Ok(new { status = "success", userType = "user" });
+                }
+
+                return Unauthorized(new { status = "failed", message = "Invalid email or password" });
             }
-            return token;
         }
+
     }
 }

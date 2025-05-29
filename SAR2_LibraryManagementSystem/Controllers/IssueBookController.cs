@@ -10,10 +10,12 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly IssueBookDAL _issueBookDAL;
 
-        public IssueBookController(IssueBookDAL issueBookDAL)
+        public IssueBookController(IssueBookDAL issueBookDAL, EmailService emailService)
         {
             _issueBookDAL = issueBookDAL;
+            EmailService = emailService;
         }
+        public EmailService EmailService { get; }
 
         [HttpPost("AddIssuBook")]
         public IActionResult AddIssueBooks(IssueBook issueBook)

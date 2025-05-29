@@ -45,11 +45,11 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok("Book added successfully");
         }
 
-        [HttpPut("update")]
-        [Authorize(Roles = "Admin, Manager")]
-        public IActionResult UpdateBooks(Books book)
+        [HttpPut("{id}")]
+      //  [Authorize(Roles = "Admin, Manager")]
+        public IActionResult UpdateBooks(int id, [FromBody] Books book)
         {
-            if (book.bookId <= 0)
+            if (id <= 0 || id != book.bookId)
                 return BadRequest("Invalid Book ID.");
 
             _booksDAL.UpdateBooks(book);

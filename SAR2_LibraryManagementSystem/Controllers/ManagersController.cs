@@ -15,15 +15,25 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _managerDAL = managerDAL;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public IActionResult AddManagers(Managers manager)
         {
 
-            _managerDAL.AddManagers(manager);
-            return Ok("Manager added successfully");
+            //_managerDAL.AddManagers(manager);
+            //return Ok(new { message = "Manager registered successfully" });
+            try
+            {
+                // your ADO.NET insert logic here...
+                _managerDAL.AddManagers(manager);
+                return Ok(new { message = "Manager registered successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
         }
-        [HttpGet]
+        [HttpGet("get")]
         public IActionResult GetAllManagers()
         {
             var manager = _managerDAL.GetAllManagers();
@@ -31,7 +41,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("update/{mId}")]
         public IActionResult UpdateManager(Managers managers)
         {
             if (managers.mId <= 0)
@@ -43,7 +53,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
 
         }
-        [HttpDelete("{mId}")]
+        [HttpDelete("delete/{mId}")]
         public IActionResult DeleteManager(int mId)
         {
             if (mId <= 0)
@@ -53,7 +63,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { succes = true, message = "Manager Deleted Succesfully" });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getById{id}")]
         public IActionResult GetManagerById(int id)
         {
             var manager = _managerDAL.GetManagerById(id);

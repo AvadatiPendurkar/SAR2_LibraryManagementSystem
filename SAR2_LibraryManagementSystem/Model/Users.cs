@@ -8,5 +8,6 @@
         public string email { get; set; }
         public string pass { get; set; }
         public string mobileNo { get; set; }
+        
     }
 }
