@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAR2_LibraryManagementSystem.Model;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -64,6 +65,15 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
             _booksDAL.DeleteBooks(bookId);
             return Ok(new { success = true, message = "Book deleted successfully." });
-        }        
+        }
+
+        [HttpGet("books-by-category/{genre}")]
+        public  IActionResult getByGener(string genre)
+        {
+            //return Ok(new { success = true,
+            var books = _booksDAL.ViewByGener(genre);
+            return Ok(books);
+        }
+            
     }
 }

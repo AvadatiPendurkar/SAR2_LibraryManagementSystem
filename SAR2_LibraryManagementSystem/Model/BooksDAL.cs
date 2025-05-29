@@ -143,5 +143,42 @@ public class BooksDAL
             }
         }
     }
+     // view by gener 
+    public  List <Books> ViewByGener(string genre)
+    {
+
+        var book = new List<Books>();
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+            using (var cmd = new SqlCommand("sp_viewBooksByGenre", con)) 
+            {
+                cmd.CommandType= CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@genre", genre);
+
+           
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        book.Add(new Books
+                        {
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            isbn = reader["isbn"].ToString(),
+                            genre = reader["genre"].ToString(),
+                            quantity = Convert.ToInt32(reader["quantity"]),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                        });
+                    }
+                }  
+            }
+        }
+        return book;
+    }
+    
+
+
 
 }
