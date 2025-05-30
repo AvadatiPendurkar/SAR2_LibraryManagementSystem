@@ -89,6 +89,8 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 {
                     // User found
                     return Ok(new { status = "success", userType = "user" });
+
+
                 }
 
                 return Unauthorized(new { status = "failed", message = "Invalid email or password" });
