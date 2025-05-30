@@ -109,7 +109,7 @@ public class DataAccessLayer
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString(),
-                       // isBlocked = Convert.ToBoolean(reader["isBlocked"])
+                        IsBlocked = Convert.ToBoolean(reader["isBlocked"])
 
 
 
