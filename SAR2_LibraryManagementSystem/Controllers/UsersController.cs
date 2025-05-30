@@ -1,5 +1,6 @@
 ﻿  using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SAR2_LibraryManagementSystem.Model;
 
 namespace SAR2_LibraryManagementSystem.Controllers
@@ -83,7 +84,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _dataAccessLayer.DeleteUser(userId);
             return Ok(new { success = true, message = "User deleted successfully." });
         }
-
+        // view by id
         [HttpGet("ViewbyId")]
         public IActionResult GetUsersById(int id)
         {
@@ -94,6 +95,31 @@ namespace SAR2_LibraryManagementSystem.Controllers
             }
             return Ok(user);
         }
-       
+
+        // Block User
+        [HttpPut("block/{id}")]
+        public IActionResult BlockUser(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid user ID.");
+
+            _dataAccessLayer.BlockUser(id);
+            return Ok(new { success = true, message = $"User with ID {id} has been blocked." });
+        }
+
+        // Unblock User
+        [HttpPut("unblock/{id}")]
+        public IActionResult UnblockUser(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid user ID.");
+
+            _dataAccessLayer.UnblockUser(id);
+            return Ok(new { success = true, message = $"User with ID {id} has been unblocked." });
+        }
+
+
+
+
     }
 }

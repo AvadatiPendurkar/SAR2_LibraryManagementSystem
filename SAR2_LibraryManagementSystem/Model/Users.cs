@@ -8,6 +8,7 @@
         public string email { get; set; }
         public string pass { get; set; }
         public string mobileNo { get; set; }
-        
+        public bool IsBlocked { get; set; } = false;
+
     }
 }
