@@ -16,10 +16,10 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         public readonly IConfiguration config;
 
-        public LoginController(IConfiguration configuration, EmailService emailService)
+        public LoginController(IConfiguration configuration)
         {
             config = configuration;
-            EmailService = emailService;
+           // EmailService = emailService;
         }
         public EmailService EmailService { get; }
 
@@ -88,7 +88,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 if (reader.Read())
                 {
                     // User found
-                    return Ok(new { status = "success", userType = "user" });
+                    return Ok(new { status = "success", userType = "user", userId=reader.GetInt32(0) });
 
 
                 }

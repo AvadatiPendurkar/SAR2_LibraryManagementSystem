@@ -27,6 +27,7 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
+
                 
 
                 int affectedrow = cmd.ExecuteNonQuery();

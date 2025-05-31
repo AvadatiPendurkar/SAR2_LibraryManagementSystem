@@ -58,22 +58,20 @@ namespace SAR2_LibraryManagementSystem.Model
             }
         }
 
-        //public void DeleteIssueBook(int issueBookId)
-        //{
-        //    using (var con = new SqlConnection(_connectionString))
-        //    {
-        //        con.Open();
+        public void ReturnIssuedBook(int issueId)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("UPDATE IssueBook SET status = 'returned', returnDate = GETDATE() WHERE issueId = @issueId", conn))
+                {
+                    
+                    cmd.Parameters.AddWithValue("@issueId", issueId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
-        //        using (var cmd = new SqlCommand("sp_deleteIssueBook", con))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@issueId", issueBookId);
-
-        //            int affectedrow = cmd.ExecuteNonQuery();
-
-        //        }
-        //    }
-        //}
 
         public List<IssueBook> ViewIssuesBooks()
         {
