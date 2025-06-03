@@ -27,12 +27,12 @@ namespace SAR2_LibraryManagementSystem.Model
                     cmd.Parameters.AddWithValue("@issueDate", issueBook.issueDate);
                     cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
+                    cmd.Parameters.AddWithValue("@returnDate", DateTime.Now);
                     cmd.Parameters.AddWithValue("@status", issueBook.status);
 
                     int affectedrow = cmd.ExecuteNonQuery();
 
                 }
-
             }
         }
 
@@ -52,28 +52,26 @@ namespace SAR2_LibraryManagementSystem.Model
                     //cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
                     //cmd.Parameters.AddWithValue("@status", issueBook.status);
-
+                       
                     int affectedrow = cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        //public void DeleteIssueBook(int issueBookId)
-        //{
-        //    using (var con = new SqlConnection(_connectionString))
-        //    {
-        //        con.Open();
+        public void ReturnIssuedBook(int issueId)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("UPDATE IssueBook SET status = 'returned', returnDate = GETDATE() WHERE issueId = @issueId", conn))
+                {
+                    
+                    cmd.Parameters.AddWithValue("@issueId", issueId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
-        //        using (var cmd = new SqlCommand("sp_deleteIssueBook", con))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@issueId", issueBookId);
-
-        //            int affectedrow = cmd.ExecuteNonQuery();
-
-        //        }
-        //    }
-        //}
 
         public List<IssueBook> ViewIssuesBooks()
         {
@@ -96,6 +94,7 @@ namespace SAR2_LibraryManagementSystem.Model
                             issueDate = Convert.ToDateTime(reader["issueDate"]),
                             dueDate = Convert.ToDateTime(reader["dueDate"]),
                             bookQty = Convert.ToInt32(reader["bookQty"]),
+                            returnDate = Convert.ToDateTime(reader["returnDate"]),
                             status = reader["status"].ToString()
                         });
                     }
@@ -128,6 +127,7 @@ namespace SAR2_LibraryManagementSystem.Model
                                 issueDate = Convert.ToDateTime(reader["issueDate"]),
                                 dueDate = Convert.ToDateTime(reader["dueDate"]),
                                 bookQty = Convert.ToInt32(reader["bookQty"]),
+                                returnDate = Convert.ToDateTime(reader["returnDate"]),
                                 status = reader["status"].ToString()
                             };
                         }

@@ -21,7 +21,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         public IActionResult AddIssueBooks(IssueBook issueBook)
         {
             _issueBookDAL.AddIssueBooks(issueBook);
-            return Ok("Book Issued Successfully");
+            return Ok(new { results =  "Book Issued Successfully" });
         }
 
         [HttpPut("updateIssuBook")]
@@ -60,6 +60,20 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 return NotFound(new { Message = $"Issue book with ID {id} not found." });
             }
             return Ok(issuebook);
+        }
+
+        [HttpPut("returnBook/{issueId}")]
+        public IActionResult ReturnBook(int issueId)
+        {
+            try
+            {
+                _issueBookDAL.ReturnIssuedBook(issueId);
+                return Ok(new { message = "Book returned successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to return book.", error = ex.Message });
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿  using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SAR2_LibraryManagementSystem.Model;
@@ -12,16 +13,16 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly DataAccessLayer _dataAccessLayer;
 
-        public UsersController(DataAccessLayer dataAccessLayer, EmailService emailService)
+        public UsersController(DataAccessLayer dataAccessLayer,EmailService emailService)
         {
             _dataAccessLayer = dataAccessLayer;
-            EmailService = emailService;
+            _emailService = emailService;
         }
-        public EmailService EmailService { get; }
+        public EmailService _emailService { get; }
 
 
         [HttpPost("register")]
-        public IActionResult AddUser(Users user)
+        public async Task<IActionResult> AddUser(Users user)
         {
             _dataAccessLayer.AddUser(user);
             const string subject = "Account Created";
@@ -38,8 +39,17 @@ namespace SAR2_LibraryManagementSystem.Controllers
                     </body>
                 </html>
             """;
-            EmailService.SendEmail(user.email, subject, body);
-            return Ok("User added successfully");
+            await _emailService.SendEmailAsync(user.email, subject, body);
+            
+            //return Ok("User added successfully");
+            return Ok(new { success = true, message = "User added successfully" });
+        }
+
+        [HttpGet("email-exists")]
+        public async Task<IActionResult> CheckEmailExists([FromQuery] string email)
+        {
+            var exists = await _dataAccessLayer.DoesEmailExistAsync(email);
+            return Ok(exists);
         }
 
         [HttpPost("login")]
@@ -49,10 +59,11 @@ namespace SAR2_LibraryManagementSystem.Controllers
             {
                 return BadRequest("Email and password are required.");
             }
-            if (_dataAccessLayer.LoginUser(login, out string message))
+            if (_dataAccessLayer.LoginUser(login, out string message) )
             {
                 return Ok(new { success = true, message });
             }
+            
             else
             {
                 return Unauthorized(new { success = false, message });
@@ -86,7 +97,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "User deleted successfully." });
         }
         // view by id
-        [HttpGet("ViewbyId")]
+        [HttpGet("ViewbyId/{id}")]
         public IActionResult GetUsersById(int id)
         {
             var user=_dataAccessLayer.GetUsersById(id);
@@ -129,6 +140,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             await _dataAccessLayer.SavechnagesTask(user);
             return NoContent();
         }
+
 
 
 
