@@ -1,4 +1,5 @@
-﻿  using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SAR2_LibraryManagementSystem.Model;
@@ -11,34 +12,36 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly DataAccessLayer _dataAccessLayer;
 
-        public UsersController(DataAccessLayer dataAccessLayer)
+        public UsersController(DataAccessLayer dataAccessLayer,EmailService emailService)
         {
             _dataAccessLayer = dataAccessLayer;
-           // EmailService = emailService;
+            _emailService = emailService;
         }
-       // public EmailService EmailService { get; }
+        public EmailService _emailService { get; }
 
 
         [HttpPost("register")]
-        public IActionResult AddUser(Users user)
+        public async Task<IActionResult> AddUser(Users user)
         {
             _dataAccessLayer.AddUser(user);
-            //const string subject = "Account Created";
-            //var body = $"""
-            //    <html>
-            //        <body>
-            //            <h1>Hello, {user.firstName} {user.lastName}</h1>
-            //            <h2>
-            //                Your account has been created and we have sent approval request to admin. 
-            //                Once the request is approved by admin you will receive email, and you will be
-            //                able to login in to your account.
-            //            </h2>
-            //            <h3>Thanks</h3>
-            //        </body>
-            //    </html>
-            //""";
-            //EmailService.SendEmail(user.email, subject, body);
-            return Ok("User added successfully");
+            const string subject = "Account Created";
+            var body = $"""
+                <html>
+                    <body>
+                        <h1>Hello, {user.firstName} {user.lastName}</h1>
+                        <h2>
+                            Your account has been created and we have sent approval request to admin. 
+                            Once the request is approved by admin you will receive email, and you will be
+                            able to login in to your account.
+                        </h2>
+                        <h3>Thanks</h3>
+                    </body>
+                </html>
+            """;
+            await _emailService.SendEmailAsync(user.email, subject, body);
+            
+            //return Ok("User added successfully");
+            return Ok(new { success = true, message = "User added successfully" });
         }
 
         [HttpPost("login")]
@@ -118,6 +121,10 @@ namespace SAR2_LibraryManagementSystem.Controllers
             _dataAccessLayer.UnblockUser(id);
             return Ok(new { success = true, message = $"User with ID {id} has been unblocked." });
         }
+
+
+
+
 
     }
 }

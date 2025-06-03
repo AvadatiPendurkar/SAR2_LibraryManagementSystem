@@ -68,43 +68,46 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 cmd.Parameters.AddWithValue("@Password", model.password); // Ideally use hashed password
 
                 SqlDataReader reader = cmd.ExecuteReader();
-                //user block or not 
-                if (reader.Read())
-                {
-                    bool hasIsBloked = false;
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        if (reader.GetName(i).Equals("isBlocked", StringComparison.OrdinalIgnoreCase))
-                        {
-                            hasIsBloked = true;
-                            break;
-                        }
-                    }
-                    if (hasIsBloked)
-                    {
-                        bool isBloked = Convert.ToBoolean(reader["isBlocked"]);
-                        if (isBloked)
-                        {;
-                            return Unauthorized(new { message = "Your account is blocked. Contact manager." });
-                        }
-                    }
-                    return Ok(new { message = "Login successful" });
-                }
-                else
-                {
-                    return Unauthorized(new { message = "Invalid email or password" });
-                }
-            
-            
-       
-
 
                 if (reader.Read())
                 {
                     // Manager found
                     return Ok(new { status = "success", userType = "manager" });
                 }
-                reader.Close();
+               reader.Close();
+
+                
+
+                //user block or not
+                //if (reader.Read())
+                //{
+                //    bool hasIsBloked = false;
+                //    for (int i = 0; i < reader.FieldCount; i++)
+                //    {
+                //        if (reader.GetName(i).Equals("isBlocked", StringComparison.OrdinalIgnoreCase))
+                //        {
+                //            hasIsBloked = true;
+                //            break;
+                //        }
+                //    }
+                //    if (hasIsBloked)
+                //    {
+                //        bool isBloked = Convert.ToBoolean(reader["isBlocked"]);
+                //        if (isBloked)
+                //        {
+                //            ;
+                //            return Unauthorized(new { message = "Your account is blocked. Contact manager." });
+                //        }
+                //    }
+                //    return Ok(new { message = "Login successful" });
+                //}
+                //else
+                //{
+                //    return Unauthorized(new { message = "Invalid email or password" });
+                //}
+
+
+
 
                 // Check User table
                 string userQuery = "SELECT * FROM [Users] WHERE email = @Email AND pass = @Password";

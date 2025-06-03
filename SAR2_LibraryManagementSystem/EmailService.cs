@@ -5,17 +5,25 @@ namespace SAR2_LibraryManagementSystem
 {
     public class EmailService
     {
+        private readonly IConfiguration Configuration;
         public EmailService(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        //public IConfiguration Configuration { get; }
 
-        public void SendEmail(string toEmail, string subject, string body)
+        public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             var fromEmail = Configuration.GetSection("Constants:FromEmail").Value ?? string.Empty;
             var fromEmailPassword = Configuration.GetSection("Constants:EmailAccountPassword").Value ?? string.Empty;
+
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential(fromEmail, fromEmailPassword),
+                EnableSsl = true,
+            };
 
             var message = new MailMessage()
             {
@@ -27,14 +35,7 @@ namespace SAR2_LibraryManagementSystem
 
             message.To.Add(toEmail);
 
-            var smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential(fromEmail, fromEmailPassword),
-                EnableSsl = true,
-            };
-
-            smtpClient.Send(message);
+           await  smtpClient.SendMailAsync(message);
         }
     }
 }

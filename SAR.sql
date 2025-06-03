@@ -14,9 +14,10 @@ use SAR2_DB
     quantity INT 	
 );
 
+select * from Managers
 select * from Books
-
-
+select * from Users
+select * from IssueBook
 
 ---create table Users
 
@@ -31,14 +32,20 @@ CREATE TABLE Users (
 
 alter table Users add role varchar(50)
 
+truncate table Users 
+
+
+truncate table Users
+
 alter table Users drop column role
+select * from Books
 select * from Users
 select * from Managers
 ----create table issueBook
 
-CREATE TABLE IssueBook (
+update TABLE IssueBook (
     issueId INT identity(1,1) PRIMARY KEY,
-	userId INT FOREIGN KEY (userId) REFERENCES Users(userId),
+	userId INT FOREIGN KEY (userId) REFERENCES Users(userId) on delete cascade,
 	bookId int	FOREIGN KEY (bookId) REFERENCES  Books(bookId),
     issueDate datetime not null,
 	dueDate datetime,
@@ -47,6 +54,21 @@ CREATE TABLE IssueBook (
     status varchar(50),
 )
 
+ALTER TABLE IssueBook
+DROP CONSTRAINT FK__IssueBook__userI__37A5467C ;
+
+SELECT name
+FROM sys.foreign_keys
+WHERE parent_object_id = OBJECT_ID('IssueBook');
+
+ALTER TABLE IssueBook
+ADD CONSTRAINT FK__IssueBook__userI__37A5467C
+FOREIGN KEY (userId) REFERENCES Users(userId)
+ON DELETE CASCADE;
+
+alter table IssueBook alter column userId int on delete cascade
+
+alter table IssueBook alter column userId int on delete cascade
 ---create table manageruser
 
 create table Managers
@@ -219,11 +241,12 @@ alter proc sp_issueBook
 @issueDate datetime,
 @dueDate datetime,
 @bookQty int ,
+@returnDate datetime,
 @status varchar(50)
 as
 begin
-	INSERT INTO IssueBook (userId, bookId, issueDate, dueDate, bookQty, status)
-	VALUES (@userId, @bookId, @issueDate, DATEADD(MONTH,1,GETDATE()), @bookQty, @status)
+	INSERT INTO IssueBook (userId, bookId, issueDate, dueDate, bookQty,returnDate, status)
+	VALUES (@userId, @bookId, @issueDate, DATEADD(MONTH,1,GETDATE()), @bookQty,@returnDate, @status)
 end
 
 create PROCEDURE sp_updateIssueBook1
@@ -391,3 +414,8 @@ CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR
 CONVERT(varbinary(max), 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=='));
 
 select * from Books
+
+select * from IssueBook
+
+
+select * from Users

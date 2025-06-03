@@ -27,12 +27,12 @@ namespace SAR2_LibraryManagementSystem.Model
                     cmd.Parameters.AddWithValue("@issueDate", issueBook.issueDate);
                     cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
+                    cmd.Parameters.AddWithValue("@returnDate", DateTime.Now);
                     cmd.Parameters.AddWithValue("@status", issueBook.status);
 
                     int affectedrow = cmd.ExecuteNonQuery();
 
                 }
-
             }
         }
 
@@ -52,7 +52,7 @@ namespace SAR2_LibraryManagementSystem.Model
                     //cmd.Parameters.AddWithValue("@dueDate", issueBook.dueDate);
                     cmd.Parameters.AddWithValue("@bookQty", issueBook.bookQty);
                     //cmd.Parameters.AddWithValue("@status", issueBook.status);
-
+                       
                     int affectedrow = cmd.ExecuteNonQuery();
                 }
             }
@@ -94,6 +94,7 @@ namespace SAR2_LibraryManagementSystem.Model
                             issueDate = Convert.ToDateTime(reader["issueDate"]),
                             dueDate = Convert.ToDateTime(reader["dueDate"]),
                             bookQty = Convert.ToInt32(reader["bookQty"]),
+                            returnDate = Convert.ToDateTime(reader["returnDate"]),
                             status = reader["status"].ToString()
                         });
                     }
@@ -126,6 +127,7 @@ namespace SAR2_LibraryManagementSystem.Model
                                 issueDate = Convert.ToDateTime(reader["issueDate"]),
                                 dueDate = Convert.ToDateTime(reader["dueDate"]),
                                 bookQty = Convert.ToInt32(reader["bookQty"]),
+                                returnDate = Convert.ToDateTime(reader["returnDate"]),
                                 status = reader["status"].ToString()
                             };
                         }
