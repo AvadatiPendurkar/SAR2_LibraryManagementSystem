@@ -70,6 +70,34 @@ namespace SAR2_LibraryManagementSystem.Controllers
             }
         }
 
+
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtpEmail([FromBody] OtpEmailRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Otp))
+                return BadRequest("Email and OTP are required.");
+
+            var subject = "Your OTP Code";
+            var body = $"Your OTP for password reset is: <strong>{request.Otp}</strong>";
+
+            try
+            {
+                await _emailService.SendEmailAsync(request.Email, subject, body);
+                return Ok(new { message = "OTP sent successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to send email: {ex.Message}");
+            }
+        }
+
+        public class OtpEmailRequest
+        {
+            public string Email { get; set; }
+            public string Otp { get; set; }
+        }
+
+
         [HttpPut("update")]
         public IActionResult UpdateUser(Users user)
         {
