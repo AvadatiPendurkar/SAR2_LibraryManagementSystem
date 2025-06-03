@@ -100,6 +100,26 @@ public class DataAccessLayer
         }
     }
 
+
+    public void UpdateUserPassword(int userId, string newPassword)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_updateUserPassword", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@pass", newPassword);
+
+                int affectedRows = cmd.ExecuteNonQuery();
+                // Optionally check affectedRows to confirm update success
+            }
+        }
+    }
+
+
     //emil exist
     public async Task<bool> DoesEmailExistAsync(string email)
     {
