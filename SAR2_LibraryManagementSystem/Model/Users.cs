@@ -11,4 +11,11 @@
         public bool IsBlocked { get; set; } = false;
 
     }
+
+    public class Demo
+    {
+        public int Id { get; set; }
+        public string fname { get; set; }
+        public string status { get; set; }
+    }
 }
