@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SAR2_LibraryManagementSystem.Model;
+using System.Threading.Tasks;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -116,6 +117,17 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
             _dataAccessLayer.UnblockUser(id);
             return Ok(new { success = true, message = $"User with ID {id} has been unblocked." });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] Users user)
+        {
+            if (id != user.userId)
+                return BadRequest();
+
+            _dataAccessLayer.Entry(user).State = EntityState.Modified;
+            await _dataAccessLayer.SavechnagesTask(user);
+            return NoContent();
         }
 
 
