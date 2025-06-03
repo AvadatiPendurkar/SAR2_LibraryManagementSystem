@@ -35,6 +35,18 @@ public class DataAccessLayer
         }
     }
 
+    public void AddDemo(Demo demo)
+    {
+        //using (var con = new SqlConnection(_connectionString))
+        //{
+        //    con.Open();
+        //    string cmd = "insert into Demo(fname,status) values(@fname,@status)";
+        //    using(var sqlcmd = new SqlCommand(cmd, con)
+        //    {
+                
+        //    }
+        //}
+    }
     //user login 
     public bool LoginUser(Login login, out string message)
     {
@@ -87,6 +99,25 @@ public class DataAccessLayer
             }
         }
     }
+
+    //emil exist
+    public async Task<bool> DoesEmailExistAsync(string email)
+    {
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT COUNT(1) FROM Users WHERE email = @Email";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@Email", email);
+
+                await conn.OpenAsync();
+                int count = (int)await cmd.ExecuteScalarAsync();
+
+                return count > 0;
+            }
+        }
+    }
+
 
     //view all users
     public List<Users> GetAllUsers()

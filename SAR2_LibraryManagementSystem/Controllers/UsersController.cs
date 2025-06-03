@@ -44,6 +44,13 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "User added successfully" });
         }
 
+        [HttpGet("email-exists")]
+        public async Task<IActionResult> CheckEmailExists([FromQuery] string email)
+        {
+            var exists = await _dataAccessLayer.DoesEmailExistAsync(email);
+            return Ok(exists);
+        }
+
         [HttpPost("login")]
         public IActionResult Login(Login login)
         {
@@ -89,7 +96,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "User deleted successfully." });
         }
         // view by id
-        [HttpGet("ViewbyId")]
+        [HttpGet("ViewbyId/{id}")]
         public IActionResult GetUsersById(int id)
         {
             var user=_dataAccessLayer.GetUsersById(id);

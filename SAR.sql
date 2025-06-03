@@ -418,4 +418,21 @@ select * from Books
 select * from IssueBook
 
 
+
 select * from Users
+
+create table ContactUs(
+	Id int primary key identity(1,1),
+	Email varchar(100),
+	Feedback varchar(max)
+);
+
+create table Otp(
+	Id int primary key identity(1,1),
+	Email varchar(100),
+	Otp int,
+	CreatedAt Datetime
+);
+
+
+create table demo(id int primary key identity(1,1), fname varchar(20), status varchar(20));
