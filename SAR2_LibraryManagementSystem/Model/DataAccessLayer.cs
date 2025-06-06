@@ -35,18 +35,36 @@ public class DataAccessLayer
         }
     }
 
-    public void AddDemo(Demo demo)
+
+    public bool IsEmailExists(string email)
     {
-        //using (var con = new SqlConnection(_connectionString))
-        //{
-        //    con.Open();
-        //    string cmd = "insert into Demo(fname,status) values(@fname,@status)";
-        //    using(var sqlcmd = new SqlCommand(cmd, con)
-        //    {
-                
-        //    }
-        //}
+        using (SqlConnection con = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT COUNT(*) FROM Users WHERE email = @email";
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            con.Open();
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
+        }
     }
+
+
+
+
+    //public void AddDemo(Demo demo)
+    //{
+    //    //using (var con = new SqlConnection(_connectionString))
+    //    //{
+    //    //    con.Open();
+    //    //    string cmd = "insert into Demo(fname,status) values(@fname,@status)";
+    //    //    using(var sqlcmd = new SqlCommand(cmd, con)
+    //    //    {
+
+    //    //    }
+    //    //}
+    //}
     //user login 
     public bool LoginUser(Login login, out string message)
     {
@@ -100,7 +118,7 @@ public class DataAccessLayer
         }
     }
 
-
+    
     public void UpdateUserPassword(int userId, string newPassword)
     {
         using (var con = new SqlConnection(_connectionString))
@@ -161,9 +179,7 @@ public class DataAccessLayer
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString(),
-                        IsBlocked = Convert.ToBoolean(reader["isBlocked"])
-
-
+                        IsAuthorized = Convert.ToBoolean(reader["isAuthorized"])
 
                     });
                 }
@@ -171,6 +187,37 @@ public class DataAccessLayer
         }
         return users;
     }
+
+
+    //public List<Users> GetAuthorizedUsers()
+    //{
+    //    var users = new List<Users>();
+
+    //    using (var connection = new SqlConnection(_connectionString))
+    //    {
+    //        var command = new SqlCommand("SELECT userId, firstName, lastName, email, mobileNo FROM users WHERE IsAuthorized = \", connection);
+    //        connection.Open();
+    //        command.CommandType = CommandType.StoredProcedure;
+    //        using (var reader = command.ExecuteReader())
+    //        {
+    //            while (reader.Read())
+    //            {
+    //                users.Add(new Users
+    //                {
+    //                    userId = Convert.ToInt32(reader["userId"]),
+    //                    firstName = reader["firstName"].ToString(),
+    //                    lastName = reader["lastName"].ToString(),
+    //                    email = reader["email"].ToString(),
+    //                    pass = reader["pass"].ToString(),
+    //                    mobileNo = reader["mobileNo"].ToString(),
+    //                    IsAuthorized = Convert.ToBoolean(reader["isAuthorized"])
+
+    //                });
+    //            }
+    //        }
+    //    }
+    //    return users;
+    //}
 
     //delete user
     public void DeleteUser(int userId)
@@ -182,6 +229,22 @@ public class DataAccessLayer
             using (var cmd = new SqlCommand("sp_deleteUser1", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public void DeleteRequestedUser(int userId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+            var command = "DELETE FROM Users WHERE userId = @userId";
+            using (var cmd = new SqlCommand(command, con))
+            {
+                //cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@userId", userId);
 
                 cmd.ExecuteNonQuery();
@@ -245,6 +308,8 @@ public class DataAccessLayer
     }
 
 
+
+
     // Unblock User
     public void UnblockUser(int userId)
     {
@@ -256,6 +321,25 @@ public class DataAccessLayer
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@userId", userId);
                 cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public void AddFeedback(Feedback feedback)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            string sqlquery = "insert into Feedback(CName,CEmail,CMessage) values (@CName,@CEmail,@CMessage)";
+            using (var cmd = new SqlCommand(sqlquery, con))
+            {
+                //cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CName", feedback.CName);
+                cmd.Parameters.AddWithValue("@CEmail", feedback.CEmail);
+                cmd.Parameters.AddWithValue("@CMessage", feedback.CMessage);
+
+                int affectedrow = cmd.ExecuteNonQuery();
             }
         }
     }

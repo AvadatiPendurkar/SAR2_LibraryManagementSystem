@@ -115,13 +115,14 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@Email", model.email);
                 cmd.Parameters.AddWithValue("@Password", model.password);
+            
 
                 reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
                     // User found
-                    return Ok(new { status = "success", userType = "user", userId=reader.GetInt32(0) });
+                    return Ok(new { status = "success", userType = "user", userId=reader.GetInt32(0), isAuthorized=reader.GetBoolean(6)});
 
 
                 }
@@ -131,22 +132,22 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
 
-        [HttpPost("DemoRequest")]
-        public IActionResult DemoRequest(Demo demo)
-        {
-            demo.status = "unauthorized";
+        //[HttpPost("DemoRequest")]
+        //public IActionResult DemoRequest(Demo demo)
+        //{
+        //    demo.status = "unauthorized";
 
-            using (SqlConnection con = new SqlConnection(config.GetConnectionString("DefaultConnection")))
-            {
-                string query = "insert into Demo(fname,status) values (@fname,@status)";
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@fname",demo.fname);
-                cmd.Parameters.AddWithValue("@status", demo.status);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
-            return Ok(new { message = "Request submitted successfully" });
-        }
+        //    using (SqlConnection con = new SqlConnection(config.GetConnectionString("DefaultConnection")))
+        //    {
+        //        string query = "insert into Demo(fname,status) values (@fname,@status)";
+        //        SqlCommand cmd = new SqlCommand(query, con);
+        //        cmd.Parameters.AddWithValue("@fname",demo.fname);
+        //        cmd.Parameters.AddWithValue("@status", demo.status);
+        //        con.Open();
+        //        cmd.ExecuteNonQuery();
+        //    }
+        //    return Ok(new { message = "Request submitted successfully" });
+        //}
 
     }
 }

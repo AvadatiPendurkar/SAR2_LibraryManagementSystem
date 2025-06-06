@@ -41,18 +41,20 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
         }
 
-        [HttpPut("update/{mId}")]
-        public IActionResult UpdateManager(Managers managers)
+        [HttpPut("update/{id}")]
+        public IActionResult UpdateManager(int id, [FromBody] Managers manager)
         {
-            if (managers.mId <= 0)
-                return BadRequest("Invalid Manager Id");
+            Console.WriteLine($"Route ID: {id}, Body ID: {manager?.mId}");
 
-            _managerDAL.UpdateManager(managers);
-            return Ok(new { succes = true, message = "Managers updated successfully." });
+            if (manager == null)
+                return BadRequest(new { error = "Manager data is missing" });
 
-
-
+            _managerDAL.UpdateManager(manager);
+            return Ok(new { success = "Manager updated (even if ID mismatch)" });
         }
+
+
+
         [HttpDelete("delete/{mId}")]
         public IActionResult DeleteManager(int mId)
         {
@@ -63,7 +65,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { succes = true, message = "Manager Deleted Succesfully" });
         }
 
-        [HttpGet("getById{id}")]
+        [HttpGet("getById/{id}")]
         public IActionResult GetManagerById(int id)
         {
             var manager = _managerDAL.GetManagerById(id);

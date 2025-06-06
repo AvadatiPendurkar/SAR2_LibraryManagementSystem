@@ -44,7 +44,7 @@ public class ManagerDAL
         {
 
             conn.Open();
-           // string updateQuery = "UPDATE Managers  SET mfirstName = @mfirstName, mlastName = @mlastName, email = @email, mobileNo =@mobileNo = @pass WHERE mId = @mId";
+            // string updateQuery = "UPDATE Managers  SET mfirstName = @mfirstName, mlastName = @mlastName, email = @email, mobileNo =@mobileNo = @pass WHERE mId = @mId";
 
             using (var cmd = new SqlCommand("sp_updateManager", conn))
             {
@@ -54,9 +54,9 @@ public class ManagerDAL
                 cmd.Parameters.AddWithValue("@mlastName", manager.mlastName);
                 cmd.Parameters.AddWithValue("@email", manager.email);
                 cmd.Parameters.AddWithValue("@mobileNo", manager.mobileNo);
-                cmd.Parameters.AddWithValue("@pass", manager.pass);
+                //cmd.Parameters.AddWithValue("@pass", manager.pass);
 
-                cmd.ExecuteNonQuery ();
+                int affectedrow = cmd.ExecuteNonQuery();
 
             }
 
@@ -94,7 +94,7 @@ public class ManagerDAL
     }
     //view by Id
 
-    public Managers GetManagerById(int id)
+    public Managers GetManagerById(int mId)
     {
         Managers manager = null;
         using (var conn = new SqlConnection(_connectionString))
@@ -103,7 +103,7 @@ public class ManagerDAL
             using (var cmd = new SqlCommand("sp_viewManagerById", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@mId", mId);
                 using (var reader = cmd.ExecuteReader())
                 {
 
@@ -111,16 +111,14 @@ public class ManagerDAL
                     {
                         manager = new Managers
                         {
-                            mId = Convert.ToInt16(reader["mid"]),
+                            mId = Convert.ToInt16(reader["mId"]),
                             mfirstName = reader["mfirstName"].ToString(),
                             mlastName = reader["mlastName"].ToString(),
                             email = reader["email"].ToString(),
                             pass = reader["pass"].ToString(),
                             mobileNo = reader["mobileNo"].ToString()
                         };
-
-                    }
-                   
+                    }                   
                 }
             }
         }

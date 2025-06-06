@@ -9,6 +9,5 @@
         public string mobileNo { get; set; }
         public string pass {  get; set; }
 
-
     }
 }
