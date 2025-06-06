@@ -10,9 +10,12 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly ManagerDAL _managerDAL;
 
-        public ManagersController(ManagerDAL managerDAL)
+        private readonly IRepo<Managers> managerRepo;
+
+        public ManagersController(ManagerDAL managerDAL, IRepo<Managers> _managerRepo)
         {
             _managerDAL = managerDAL;
+            managerRepo = _managerRepo;
         }
 
         [HttpPost("register")]
@@ -24,6 +27,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
             try
             {
                 // your ADO.NET insert logic here...
+                managerRepo.Save(manager);
                 _managerDAL.AddManagers(manager);
                 return Ok(new { message = "Manager registered successfully" });
             }

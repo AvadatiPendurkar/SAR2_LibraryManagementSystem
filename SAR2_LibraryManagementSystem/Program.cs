@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SAR2_LibraryManagementSystem.Model;
+using SAR2_LibraryManagementSystem.Repositories.Interfaces;
+using SAR2_LibraryManagementSystem.Repositories;
 using System.Text;
 
 namespace SAR2_LibraryManagementSystem
@@ -23,7 +25,8 @@ namespace SAR2_LibraryManagementSystem
             builder.Services.AddScoped<ManagerDAL>();
             builder.Services.AddScoped<BooksDAL>();
             builder.Services.AddScoped<IssueBookDAL>();
-
+            builder.Services.AddScoped<IRepo<Managers>, Repository<Managers>>();
+            builder.Services.AddScoped<IIssueBookRepository, IssueBookRepository>();
             builder.Services.AddTransient<EmailService>();
 
             //JWT

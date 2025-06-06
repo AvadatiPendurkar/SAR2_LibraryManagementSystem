@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAR2_LibraryManagementSystem.Model;
+using SAR2_LibraryManagementSystem.Repositories.Interfaces;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -10,18 +11,20 @@ namespace SAR2_LibraryManagementSystem.Controllers
     {
         private readonly IssueBookDAL _issueBookDAL;
 
-        public IssueBookController(IssueBookDAL issueBookDAL, EmailService emailService)
+        public IssueBookController(EmailService emailService, IIssueBookRepository issueBookRepository)
         {
-            _issueBookDAL = issueBookDAL;
+            //_issueBookDAL = issueBookDAL;
             EmailService = emailService;
+            _issueBookRepository = issueBookRepository;
         }
+        private readonly IIssueBookRepository _issueBookRepository;
         public EmailService EmailService { get; }
 
         [HttpPost("AddIssuBook")]
         public IActionResult AddIssueBooks(IssueBook issueBook)
         {
-            _issueBookDAL.AddIssueBooks(issueBook);
-            return Ok(new { results =  "Book Issued Successfully" });
+            _issueBookRepository.AddIssueBooks(issueBook);
+            return Ok(new { results = "Book Issued Successfully" });
         }
 
         [HttpPut("updateIssuBook")]
@@ -30,36 +33,25 @@ namespace SAR2_LibraryManagementSystem.Controllers
             if (issueBook.issueId <= 0)
                 return BadRequest("Invalid Issued Book id.");
 
-            _issueBookDAL.UpdateIssueBooks(issueBook);
+            _issueBookRepository.UpdateIssueBooks(issueBook);
             return Ok(new { success = true, message = "Issued book updated successfully." });
         }
-
-        //[HttpDelete("{issueId}")]
-        //public IActionResult DeleteIssueBooks(int issueId)
-        //{
-        //    if (issueId <= 0)
-        //        return BadRequest("Invalid issue book id");
-
-        //    _issueBookDAL.DeleteIssueBook(issueId);
-        //    return Ok(new { success = true, message = "Issue book deleted successfully" });
-        //}
 
         [HttpGet("ViewAllIssueBook")]
         public IActionResult ViewAllIssueBook()
         {
-            var issueBooks = _issueBookDAL.ViewIssuesBooks();
+            var issueBooks = _issueBookRepository.ViewIssuesBooks();
             return Ok(issueBooks);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetIssueBookById(int id)
         {
-            var issuebook = _issueBookDAL.ViewIssueBooksById(id);
-            if(issuebook == null)
-            {
+            var issueBook = _issueBookRepository.ViewIssueBooksById(id);
+            if (issueBook == null)
                 return NotFound(new { Message = $"Issue book with ID {id} not found." });
-            }
-            return Ok(issuebook);
+
+            return Ok(issueBook);
         }
 
         [HttpPut("returnBook/{issueId}")]
@@ -67,7 +59,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         {
             try
             {
-                _issueBookDAL.ReturnIssuedBook(issueId);
+                _issueBookRepository.ReturnIssuedBook(issueId);
                 return Ok(new { message = "Book returned successfully." });
             }
             catch (Exception ex)
