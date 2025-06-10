@@ -46,15 +46,37 @@ namespace SAR2_LibraryManagementSystem
                     };
                 });
 
-            builder.Services.AddCors(cors =>
+            //builder.Services.AddCors(cors =>
+            //{
+            //    cors.AddPolicy("cors", policy =>
+            //    {
+            //        policy.AllowAnyHeader();
+            //        policy.AllowAnyMethod();
+            //        policy.AllowAnyOrigin();
+
+            //    });
+
+            //});
+
+            builder.Services.AddCors(options =>
             {
-                cors.AddPolicy("cors", policy =>
+                // Generic CORS policy - allow all (for APIs like Swagger/testing tools)
+                options.AddPolicy("cors", policy =>
                 {
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                    policy.AllowAnyOrigin();
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                });
+
+                // Specific CORS policy for React app on localhost:3000
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                 });
             });
+
 
             var app = builder.Build();
 
@@ -72,6 +94,7 @@ namespace SAR2_LibraryManagementSystem
 
             app.MapControllers();
             app.UseCors("cors");
+            app.UseCors("AllowReactApp");
             app.Run();
         }
     }
