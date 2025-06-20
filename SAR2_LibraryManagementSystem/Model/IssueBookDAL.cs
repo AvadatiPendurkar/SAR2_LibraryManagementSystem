@@ -17,7 +17,6 @@ namespace SAR2_LibraryManagementSystem.Model
             using (var conn = new SqlConnection(_connectionString))
             {
 
-                //string insertquery = "INSERT INTO IssueBook (userId, bookId, issueDate, dueDate, bookQty, status) VALUES (@userId, @bookId, @issueDate, @dueDate, @bookQty, @status)";
                 conn.Open();
                 using (var cmd = new SqlCommand("sp_issueBook", conn))
                 {
@@ -63,9 +62,9 @@ namespace SAR2_LibraryManagementSystem.Model
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("UPDATE IssueBook SET status = 'returned', returnDate = GETDATE() WHERE issueId = @issueId", conn))
+                using (var cmd = new SqlCommand("Sp_ReturnIssuedBook", conn))
                 {
-                    
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@issueId", issueId);
                     cmd.ExecuteNonQuery();
                 }

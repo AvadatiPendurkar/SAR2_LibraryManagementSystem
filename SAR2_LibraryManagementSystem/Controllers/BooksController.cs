@@ -47,7 +47,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
         [HttpPut("{id}")]
       //  [Authorize(Roles = "Admin, Manager")]
-        public IActionResult UpdateBooks(int id, [FromBody] Books book)
+        public IActionResult UpdateBooks(int id, [FromBody] UpdateBookDto book)
         {
             if (id <= 0 || id != book.bookId)
                 return BadRequest("Invalid Book ID.");
@@ -67,13 +67,26 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "Book deleted successfully." });
         }
 
-        [HttpGet("books-by-category/{genre}")]
-        public  IActionResult getByGener(string genre)
+        [HttpGet("books-by-category/{genreId}")]
+        public  IActionResult getByGener(int genreId)
         {
             //return Ok(new { success = true,
-            var books = _booksDAL.ViewByGener(genre);
+            var books = _booksDAL.ViewByGener(genreId);
             return Ok(books);
         }
-            
+
+        [HttpGet("popularBook")]
+        public IActionResult getPopularBook()
+        {
+            var book = _booksDAL.GetMostIssuedBooksThisMonth();
+            return Ok(book);
+        }
+
+        [HttpGet("getBookByGenre")]
+        public IActionResult getBookByGenre()
+        {
+            var book = _booksDAL.GetBooksByGener();
+            return Ok(book);
+        }
     }
 }

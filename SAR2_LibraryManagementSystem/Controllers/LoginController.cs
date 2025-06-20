@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Data.SqlClient;
 using SAR2_LibraryManagementSystem.Model;
+using System.Data;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -62,8 +63,8 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 con.Open();
 
                 // Check Manager table
-                string managerQuery = "SELECT * FROM Managers WHERE email = @Email AND pass = @Password";
-                SqlCommand cmd = new SqlCommand(managerQuery, con);
+                SqlCommand cmd = new SqlCommand("Sp_loginManager", con);
+                cmd.CommandType = CommandType.StoredProcedure;  
                 cmd.Parameters.AddWithValue("@Email", model.email);
                 cmd.Parameters.AddWithValue("@Password", model.password); // Ideally use hashed password
 
@@ -72,7 +73,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 if (reader.Read())
                 {
                     // Manager found
-                    return Ok(new { status = "success", userType = "manager" });
+                    return Ok(new { status = "success", userType = "manager", mId = reader.GetInt32(0), isAuthorized = reader.GetBoolean(6) });
                 }
                reader.Close();
 
@@ -110,8 +111,8 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
 
                 // Check User table
-                string userQuery = "SELECT * FROM [Users] WHERE email = @Email AND pass = @Password";
-                cmd = new SqlCommand(userQuery, con);
+                cmd = new SqlCommand("Sp_loginUsers", con);
+                cmd.CommandType = CommandType.StoredProcedure;  
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@Email", model.email);
                 cmd.Parameters.AddWithValue("@Password", model.password);
@@ -122,7 +123,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
                 if (reader.Read())
                 {
                     // User found
-                    return Ok(new { status = "success", userType = "user", userId=reader.GetInt32(0), isAuthorized=reader.GetBoolean(6)});
+                    return Ok(new { status = "success", userType = "user", userId=reader.GetInt32(0)});
 
 
                 }
@@ -131,23 +132,6 @@ namespace SAR2_LibraryManagementSystem.Controllers
             }
         }
 
-
-        //[HttpPost("DemoRequest")]
-        //public IActionResult DemoRequest(Demo demo)
-        //{
-        //    demo.status = "unauthorized";
-
-        //    using (SqlConnection con = new SqlConnection(config.GetConnectionString("DefaultConnection")))
-        //    {
-        //        string query = "insert into Demo(fname,status) values (@fname,@status)";
-        //        SqlCommand cmd = new SqlCommand(query, con);
-        //        cmd.Parameters.AddWithValue("@fname",demo.fname);
-        //        cmd.Parameters.AddWithValue("@status", demo.status);
-        //        con.Open();
-        //        cmd.ExecuteNonQuery();
-        //    }
-        //    return Ok(new { message = "Request submitted successfully" });
-        //}
 
     }
 }

@@ -6,6 +6,7 @@ using SAR2_LibraryManagementSystem.Model;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace SAR2_LibraryManagementSystem.Controllers
 {
@@ -21,7 +22,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
         //    _connectionString = configuration.GetConnectionString("DefaultConnection");
         //}
 
-        public UsersController(DataAccessLayer dataAccessLayer,EmailService emailService, IConfiguration configuration)
+        public UsersController(DataAccessLayer dataAccessLayer, EmailService emailService, IConfiguration configuration)
         {
             _dataAccessLayer = dataAccessLayer;
             _emailService = emailService;
@@ -42,21 +43,26 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
             //return Ok("User added successfully");
             //return Ok(new { success = true, message = "User added successfully" });
-            const string subject = "Account Created";
-            var body = $"""
-                <html>
-                    <body>
-                        <h1>Hello, {user.firstName} {user.lastName}</h1>
-                        <h2>
-                            Your account has been created and we have sent approval request to admin. 
-                            Once the request is approved by admin you will receive email, and you will be
-                            able to login in to your account.
-                        </h2>
-                        <h3>Thanks</h3>
-                    </body>
-                </html>
-            """;
-            await _emailService.SendEmailAsync(user.email, subject, body);
+            //const string subject = "Account Created";
+            //var body = $"""
+            //<html>
+            //    <body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
+            //        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            //            <h1 style="font-size: 24px; color: #333;">Hello, {user.firstName} {user.lastName}</h1>
+            //                 <p style="font-size: 16px; color: #555;">
+            //                   Your account has been created and an approval request has been sent to the admin.
+            //                    Once your request is approved, you will receive a confirmation email and will be able to log in to your account.
+            //                 </p>
+            //                 <p style="font-size: 16px; color: #555;">
+            //                   If you have any questions, feel free to contact us.
+            //                 </p>
+            //                   <p style="font-size: 16px; color: #333; font-weight: bold;">Thanks,<br/>Digital Library Team</p>
+            //        </div>
+            //    </body>
+            //</html>
+            //""";
+
+            //await _emailService.SendEmailAsync(user.email, subject, body);
             return Ok(new { message = "User registered successfully." });
 
         }
@@ -75,11 +81,11 @@ namespace SAR2_LibraryManagementSystem.Controllers
             {
                 return BadRequest("Email and password are required.");
             }
-            if (_dataAccessLayer.LoginUser(login, out string message) )
+            if (_dataAccessLayer.LoginUser(login, out string message))
             {
                 return Ok(new { success = true, message });
             }
-            
+
             else
             {
                 return Unauthorized(new { success = false, message });
@@ -144,8 +150,8 @@ namespace SAR2_LibraryManagementSystem.Controllers
         [HttpGet("ViewbyId/{id}")]
         public IActionResult GetUsersById(int id)
         {
-            var user=_dataAccessLayer.GetUsersById(id);
-            if(user == null)
+            var user = _dataAccessLayer.GetUsersById(id);
+            if (user == null)
             {
                 return NotFound(new { Message = $"User with ID{id} not found" });
             }
@@ -153,26 +159,26 @@ namespace SAR2_LibraryManagementSystem.Controllers
         }
 
         // Block User
-        [HttpPut("block/{id}")]
-        public IActionResult BlockUser(int id)
-        {
-            if (id <= 0)
-                return BadRequest("Invalid user ID.");
+        //[HttpPut("block/{id}")]
+        //public IActionResult BlockUser(int id)
+        //{
+        //    if (id <= 0)
+        //        return BadRequest("Invalid user ID.");
 
-            _dataAccessLayer.BlockUser(id);
-            return Ok(new { success = true, message = $"User with ID {id} has been blocked." });
-        }
+        //    _dataAccessLayer.BlockUser(id);
+        //    return Ok(new { success = true, message = $"User with ID {id} has been blocked." });
+        //}
 
         // Unblock User
-        [HttpPut("unblock/{id}")]
-        public IActionResult UnblockUser(int id)
-        {
-            if (id <= 0)
-                return BadRequest("Invalid user ID.");
+        //[HttpPut("unblock/{id}")]
+        //public IActionResult UnblockUser(int id)
+        //{
+        //    if (id <= 0)
+        //        return BadRequest("Invalid user ID.");
 
-            _dataAccessLayer.UnblockUser(id);
-            return Ok(new { success = true, message = $"User with ID {id} has been unblocked." });
-        }
+        //    _dataAccessLayer.UnblockUser(id);
+        //    return Ok(new { success = true, message = $"User with ID {id} has been unblocked." });
+        //}
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> UpdateUser(int id, [FromBody] Users user)
@@ -185,54 +191,6 @@ namespace SAR2_LibraryManagementSystem.Controllers
         //    return NoContent();
         //}
 
-
-        [HttpGet("getUnauthorized")]
-        public async Task<ActionResult<IEnumerable<Users>>> GetAuthorizedUsers()
-        {
-            var users = new List<Users>();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                var command = new SqlCommand("SELECT userId, firstName, lastName, email, mobileNo FROM Users WHERE isAuthorized = 0", connection);
-                var reader = await command.ExecuteReaderAsync();
-
-                while (await reader.ReadAsync())
-                {
-                    users.Add(new Users
-                    {
-                        userId = reader.GetInt32(0),
-                        firstName = reader.GetString(1),
-                        lastName = reader.GetString(2),
-                        email = reader.GetString(3),
-                        mobileNo = reader.GetString(4)
-                    });
-                }
-            }
-
-            return Ok(users);
-        }
-
-        [HttpPut("authorized/{userId}")]
-        public async Task<IActionResult> UpdateAuthorizationStatus(int userId)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-
-                var command = new SqlCommand("UPDATE Users SET IsAuthorized = 1 WHERE UserId = @UserId", connection);
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                if (rowsAffected == 0)
-                {
-                    return NotFound($"User with ID {userId} not found.");
-                }
-
-                return NoContent(); // 204 No Content
-            }
-        }
 
         [HttpDelete("deleteRequestedUser/{userId}")]
         public IActionResult DeleteRequestedUser(int userId)
@@ -249,5 +207,46 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
             return Ok();
         }
+
+
+
+
+
+        [HttpGet("getWishlist/{userId}")]
+        public IActionResult GetWishlist(int userId)
+        {
+            var books = _dataAccessLayer.GetWishlistByUserId(userId);
+            return Ok(books);
         }
+
+
+        [HttpPost("addToWishlist")]
+        public IActionResult AddToWishlist(AddToWishlist wishlist)
+        {
+            foreach (var bookIdsingle in wishlist.bookId)
+            {
+                _dataAccessLayer.AddToWishlist(wishlist.userId, bookIdsingle);
+            }
+            return Ok(new { message = "Books added to wishlist" });
+        }
+
+
+
+   
+     [HttpDelete("deleteWishlist/{wishlistId}")]
+
+        public IActionResult deleteWishlistData(int wishlistId)
+        {
+            if (wishlistId <= 0)
+
+                return BadRequest("Invalid user ID.");
+
+            _dataAccessLayer.DeleteWishlist(wishlistId);
+            return Ok(new { success = true, message = "Wishlist book deleted successfully." });
+
+        }
+
+    }
+
+
 }

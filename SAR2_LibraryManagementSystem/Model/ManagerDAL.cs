@@ -18,8 +18,6 @@ public class ManagerDAL
         using (var conn = new SqlConnection(_connectionString))
         {
 
-            // string insertquery = "INSERT INTO Managers (mfirstName, mlastName, email, pass, mobileNo) VALUES (@mfirstName, @mlastName, @email,@mobileNo, @pass)";
-
             conn.Open();
             using (var cmd = new SqlCommand("sp_AddManager", conn))
             {
@@ -29,6 +27,7 @@ public class ManagerDAL
                 cmd.Parameters.AddWithValue("@email", manager.email);
                 cmd.Parameters.AddWithValue("@mobileNo", manager.mobileNo);
                 cmd.Parameters.AddWithValue("@pass", manager.pass);
+                cmd.Parameters.AddWithValue("@isAuthorized", manager.isAuthorized);
 
                 int affectedrow = cmd.ExecuteNonQuery();
 
@@ -44,8 +43,7 @@ public class ManagerDAL
         {
 
             conn.Open();
-            // string updateQuery = "UPDATE Managers  SET mfirstName = @mfirstName, mlastName = @mlastName, email = @email, mobileNo =@mobileNo = @pass WHERE mId = @mId";
-
+        
             using (var cmd = new SqlCommand("sp_updateManager", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -69,7 +67,7 @@ public class ManagerDAL
 
         using (var conn = new SqlConnection(_connectionString))
         {
-            //  string query = "SELECT * FROM Managers";
+        
             var command = new SqlCommand("sp_viewAllManager", conn);
             conn.Open();
             command.CommandType = CommandType.StoredProcedure;
@@ -84,8 +82,8 @@ public class ManagerDAL
                         mlastName = reader["mlastName"].ToString(),
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
-                        mobileNo = reader["mobileNo"].ToString()
-
+                        mobileNo = reader["mobileNo"].ToString(),
+                        isAuthorized = Convert.ToBoolean(reader["isAuthorized"])
                     });
                 }
             }
@@ -116,7 +114,8 @@ public class ManagerDAL
                             mlastName = reader["mlastName"].ToString(),
                             email = reader["email"].ToString(),
                             pass = reader["pass"].ToString(),
-                            mobileNo = reader["mobileNo"].ToString()
+                            mobileNo = reader["mobileNo"].ToString(),
+                            isAuthorized = Convert.ToBoolean(reader["isAuthorized"])
                         };
                     }                   
                 }
@@ -141,6 +140,54 @@ public class ManagerDAL
             }
         }
     }
+
+    public void DeleteRequestedUser(int mId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();            
+            using (var cmd = new SqlCommand("sp_deleteRequestedManager", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@mId", mId);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public bool IsEmailExists(string email)
+    {
+        using (SqlConnection con = new SqlConnection(_connectionString))
+        {
+            SqlCommand cmd = new SqlCommand("sp_isManagerEmailExist", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            con.Open();
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
+        }
+    }
+
+    //emil exist
+    public async Task<bool> DoesEmailExistAsync(string email)
+    {
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand cmd = new SqlCommand("sp_doesEmailExist", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Email", email);
+
+                await conn.OpenAsync();
+                int count = (int)await cmd.ExecuteScalarAsync();
+
+                return count > 0;
+            }
+        }
+    }
+
 }
 
 

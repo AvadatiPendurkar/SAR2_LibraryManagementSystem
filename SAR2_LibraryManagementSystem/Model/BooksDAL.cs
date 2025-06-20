@@ -21,7 +21,7 @@ public class BooksDAL
 
         using (var con = new SqlConnection(_connectionString))
         {
-            var cmd = new SqlCommand("sp_viewAllBooks", con);
+            var cmd = new SqlCommand("sp_newViewAllBooks", con);
             cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
 
@@ -35,10 +35,12 @@ public class BooksDAL
                         bookName = reader["bookName"].ToString(),
                         authorName = reader["authorName"].ToString(),
                         isbn = reader["isbn"].ToString(),
-                        genre = reader["genre"].ToString(),
+                        genreId = Convert.ToInt32(reader["genreId"]),
                         quantity = Convert.ToInt32(reader["quantity"]),
 
-                        Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                        Base64Image = Convert.ToBase64String((byte[])reader["bookImage"]),
+
+                        genre = reader["genre"].ToString()
                     });
                 }             
             }
@@ -69,7 +71,7 @@ public class BooksDAL
                             bookName = reader["bookName"].ToString(),
                             authorName = reader["authorName"].ToString(),
                             isbn = reader["isbn"].ToString(),
-                            genre = reader["genre"].ToString(),
+                            genreId = Convert.ToInt32(reader["genreId"]),
                             quantity = Convert.ToInt32(reader["quantity"]),
                             Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
                         };
@@ -89,26 +91,23 @@ public class BooksDAL
             using (var con = new SqlConnection(_connectionString))
             {
                 con.Open();
-
-                //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
                 using (var cmd = new SqlCommand("sp_addBooks", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@bookName", book.bookName);
                     cmd.Parameters.AddWithValue("@authorName", book.authorName);
                     cmd.Parameters.AddWithValue("@isbn", book.isbn);
-                    cmd.Parameters.AddWithValue("@genre", book.genre);
+                    cmd.Parameters.AddWithValue("@genreId", book.genreId);
                     cmd.Parameters.AddWithValue("@quantity", book.quantity);
                     cmd.Parameters.AddWithValue("@bookImage", imageBytes);
 
-
-                    int affectedrow = cmd.ExecuteNonQuery();
+                int affectedrow = cmd.ExecuteNonQuery();
                 }
             }
         }
    
     //update books
-    public void UpdateBooks(Books book)
+    public void UpdateBooks(UpdateBookDto book)
     {
         byte[] imageBytes = Convert.FromBase64String(book.Base64Image);
         using (var con= new SqlConnection(_connectionString))
@@ -123,7 +122,7 @@ public class BooksDAL
                 cmd.Parameters.AddWithValue("@bookName", book.bookName);
                 cmd.Parameters.AddWithValue("@authorName", book.authorName);
                 cmd.Parameters.AddWithValue("@isbn", book.isbn);
-                cmd.Parameters.AddWithValue("@genre", book.genre);
+                cmd.Parameters.AddWithValue("@genreId", book.genreId);
                 cmd.Parameters.AddWithValue("@quantity", book.quantity);
                 cmd.Parameters.AddWithValue("@bookImage", imageBytes);
 
@@ -149,7 +148,7 @@ public class BooksDAL
         }
     }
      // view by gener 
-    public  List <Books> ViewByGener(string genre)
+    public  List <Books> ViewByGener(int genreId)
     {
 
         var book = new List<Books>();
@@ -159,8 +158,7 @@ public class BooksDAL
             using (var cmd = new SqlCommand("sp_viewBooksByGenre", con)) 
             {
                 cmd.CommandType= CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@genre", genre);
-
+                cmd.Parameters.AddWithValue("@genreId", genreId);
            
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -172,7 +170,7 @@ public class BooksDAL
                             bookName = reader["bookName"].ToString(),
                             authorName = reader["authorName"].ToString(),
                             isbn = reader["isbn"].ToString(),
-                            genre = reader["genre"].ToString(),
+                            genreId = Convert.ToInt32(reader["genreId"]),
                             quantity = Convert.ToInt32(reader["quantity"]),
                             Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
                         });
@@ -182,8 +180,67 @@ public class BooksDAL
         }
         return book;
     }
-    
 
+    public List<Books> GetMostIssuedBooksThisMonth()
+    {
+        List<Books> popularBooks = new List<Books>();
 
+        using (SqlConnection con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (SqlCommand cmd = new SqlCommand("sp_popularBookM", con))
+            {
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        popularBooks.Add(new Books
+                        {
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            genreId = Convert.ToInt32(reader["genreId"]),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                        });
+                    }
+                }
+            }
+        }
+        return popularBooks;
+    }
+
+    public List<Books> GetBooksByGener()
+    {
+        List<Books> PopularGener = new List<Books>();
+
+        using(SqlConnection con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using(SqlCommand cmd = new SqlCommand("sp_popularBooksByGenre", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        PopularGener.Add(new Books
+                        {
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            genreId = Convert.ToInt32(reader["genreId"]),
+                            genre = reader["genre"].ToString(),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                        });
+                    }
+                }
+            }
+        }
+        return PopularGener;
+    }
 
 }

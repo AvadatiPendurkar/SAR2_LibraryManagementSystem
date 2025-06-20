@@ -18,7 +18,6 @@ public class DataAccessLayer
         {
             con.Open();
 
-            //string sqlquery = "insert into Users(firstName, lastName, email, pass, mobileNo) values (@firstName, @lastName, @email, @pass, @mobileNo)";
             using (var cmd = new SqlCommand("sp_addUser1", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -27,8 +26,6 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
-
-                
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
@@ -40,8 +37,8 @@ public class DataAccessLayer
     {
         using (SqlConnection con = new SqlConnection(_connectionString))
         {
-            string query = "SELECT COUNT(*) FROM Users WHERE email = @email";
-            SqlCommand cmd = new SqlCommand(query, con);
+            SqlCommand cmd = new SqlCommand("Sp_IsEmailExists", con);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Email", email);
 
             con.Open();
@@ -143,9 +140,10 @@ public class DataAccessLayer
     {
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
-            string query = "SELECT COUNT(1) FROM Users WHERE email = @Email";
-            using (SqlCommand cmd = new SqlCommand(query, conn))
+            
+            using (SqlCommand cmd = new SqlCommand("Sp_DoesEmailExistAsync", conn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Email", email);
 
                 await conn.OpenAsync();
@@ -179,7 +177,7 @@ public class DataAccessLayer
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString(),
-                        IsAuthorized = Convert.ToBoolean(reader["isAuthorized"])
+                        //IsAuthorized = Convert.ToBoolean(reader["isAuthorized"])
 
                     });
                 }
@@ -241,10 +239,9 @@ public class DataAccessLayer
         using (var con = new SqlConnection(_connectionString))
         {
             con.Open();
-            var command = "DELETE FROM Users WHERE userId = @userId";
-            using (var cmd = new SqlCommand(command, con))
+            using (var cmd = new SqlCommand("Sp_DeleteRequestedUser", con))
             {
-                //cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@userId", userId);
 
                 cmd.ExecuteNonQuery();
@@ -293,37 +290,37 @@ public class DataAccessLayer
 
     }
     // Block User
-    public void BlockUser(int userId)
-    {
-        using (var con = new SqlConnection(_connectionString))
-        {
-            con.Open();
-            using (var cmd = new SqlCommand("sp_blockUser", con))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
+    //public void BlockUser(int userId)
+    //{
+    //    using (var con = new SqlConnection(_connectionString))
+    //    {
+    //        con.Open();
+    //        using (var cmd = new SqlCommand("sp_blockUser", con))
+    //        {
+    //            cmd.CommandType = CommandType.StoredProcedure;
+    //            cmd.Parameters.AddWithValue("@userId", userId);
+    //            cmd.ExecuteNonQuery();
+    //        }
+    //    }
+    //}
 
 
 
 
     // Unblock User
-    public void UnblockUser(int userId)
-    {
-        using (var con = new SqlConnection(_connectionString))
-        {
-            con.Open();
-            using (var cmd = new SqlCommand("sp_unblockUser", con))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
+    //public void UnblockUser(int userId)
+    //{
+    //    using (var con = new SqlConnection(_connectionString))
+    //    {
+    //        con.Open();
+    //        using (var cmd = new SqlCommand("sp_unblockUser", con))
+    //        {
+    //            cmd.CommandType = CommandType.StoredProcedure;
+    //            cmd.Parameters.AddWithValue("@userId", userId);
+    //            cmd.ExecuteNonQuery();
+    //        }
+    //    }
+    //}
 
     public void AddFeedback(Feedback feedback)
     {
@@ -331,10 +328,9 @@ public class DataAccessLayer
         {
             con.Open();
 
-            string sqlquery = "insert into Feedback(CName,CEmail,CMessage) values (@CName,@CEmail,@CMessage)";
-            using (var cmd = new SqlCommand(sqlquery, con))
+            using (var cmd = new SqlCommand("Sp_AddFeedback", con))
             {
-                //cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CName", feedback.CName);
                 cmd.Parameters.AddWithValue("@CEmail", feedback.CEmail);
                 cmd.Parameters.AddWithValue("@CMessage", feedback.CMessage);
@@ -343,6 +339,80 @@ public class DataAccessLayer
             }
         }
     }
+
+    //--------------------------------- WISHLIST -----------------------------------------
+    //add to wishlist 
+    public void AddToWishlist(int userId, int bookId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("addToWishlist", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@bookId", bookId);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public List<WishlistRemove> GetWishlistByUserId(int userId)
+    {
+        List<WishlistRemove> wishlistBooks = new List<WishlistRemove>();
+
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("Sp_GetWishlistByUserId", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        wishlistBooks.Add(new WishlistRemove
+                        {
+                            WishlistId = Convert.ToInt32(reader["wishlistId"]),
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            isbn = reader["isbn"].ToString(),
+                            genreId = Convert.ToInt32(reader["genreId"]),
+                            quantity = Convert.ToInt32(reader["quantity"]),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                        });
+                    }
+                }
+            }
+        }
+
+        return wishlistBooks;
+    }
+
+    public void DeleteWishlist(int wishlistId)
+    {
+        using (var con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+
+            using (var cmd = new SqlCommand("sp_deleteWishlist", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@wishlistId", wishlistId);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+
+
+
 
 
 }

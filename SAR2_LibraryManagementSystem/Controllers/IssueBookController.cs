@@ -10,22 +10,62 @@ namespace SAR2_LibraryManagementSystem.Controllers
     public class IssueBookController : ControllerBase
     {
         private readonly IssueBookDAL _issueBookDAL;
+        private readonly BooksDAL _booksDAL;
+        private readonly DataAccessLayer _dataAccessLayer;
 
-        public IssueBookController(EmailService emailService, IIssueBookRepository issueBookRepository)
+        public IssueBookController(EmailService emailService, IIssueBookRepository issueBookRepository, BooksDAL booksDAL,DataAccessLayer dataAccessLayer)
         {
             //_issueBookDAL = issueBookDAL;
             EmailService = emailService;
             _issueBookRepository = issueBookRepository;
+            _booksDAL = booksDAL;
+            _dataAccessLayer = dataAccessLayer;
         }
         private readonly IIssueBookRepository _issueBookRepository;
         public EmailService EmailService { get; }
 
         [HttpPost("AddIssuBook")]
-        public IActionResult AddIssueBooks(IssueBook issueBook)
+        public async Task<IActionResult> AddIssueBooks(IssueBook issueBook)
         {
+            // 1. Save the issue record
             _issueBookRepository.AddIssueBooks(issueBook);
-            return Ok(new { results = "Book Issued Successfully" });
+
+            // 2. Fetch related book and user data
+            var book = _booksDAL.ViewBookById(issueBook.bookId);
+            var user = _dataAccessLayer.GetUsersById(issueBook.userId);
+
+            if (book == null || user == null)
+                return BadRequest("Book or User not found.");
+            
+
+            // 3. Compose and send the email
+            const string subject = "Book Issued Successfully";
+
+            var body = $"""
+<html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h1 style="font-size: 24px; color: #333;">Hello, {user.firstName} {user.lastName}</h1>
+            <p style="font-size: 16px; color: #555;">
+                The book titled <strong>{book.bookName}</strong> has been successfully issued to your account on <strong>{DateTime.Now:MMMM dd, yyyy}</strong>.
+            </p>
+            <p style="font-size: 16px; color: #555;">
+                Please make sure to return the book by <strong>{issueBook.dueDate:MMMM dd, yyyy}</strong> to avoid any late fees.
+            </p>
+            <p style="font-size: 16px; color: #555;">
+                If you have any questions or need assistance, feel free to contact the library team.
+            </p>
+            <p style="font-size: 16px; color: #333; font-weight: bold;">Thanks,<br/>Digital Library Team</p>
+        </div>
+    </body>
+</html>
+""";
+
+            await EmailService.SendEmailAsync(user.email, subject, body);
+            return Ok(new { message = "Book Issued Successfully" });
+
         }
+
 
         [HttpPut("updateIssuBook")]
         public IActionResult UpdateIssueBooks(IssueBook issueBook)

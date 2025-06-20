@@ -28,6 +28,8 @@ namespace SAR2_LibraryManagementSystem
             builder.Services.AddScoped<IRepo<Managers>, Repository<Managers>>();
             builder.Services.AddScoped<IIssueBookRepository, IssueBookRepository>();
             builder.Services.AddTransient<EmailService>();
+            builder.Services.AddScoped<CategoryDAL>();
+
 
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
