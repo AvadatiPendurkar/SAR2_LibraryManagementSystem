@@ -14,7 +14,7 @@ public class BooksDAL
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-    // View all Books
+    // View all Books 
     public List<Books> ViewAllBooks()
     {
         var books = new List<Books>();
@@ -242,5 +242,85 @@ public class BooksDAL
         }
         return PopularGener;
     }
+
+
+    //most Likes Books
+
+    public List<Books> likedBooks()
+    {
+        List<Books> books = new List<Books>();
+
+        using (SqlConnection con = new SqlConnection(_connectionString))
+        {
+            con.Open();
+            using (SqlCommand cmd = new SqlCommand("sp_likedBooks", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        books.Add(new Books
+                        {
+                            bookId = Convert.ToInt32(reader["bookId"]),
+                            bookName = reader["bookName"].ToString(),
+                            authorName = reader["authorName"].ToString(),
+                            genre = reader["genre"].ToString(),
+                            Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+
+                        });
+                    }
+                }
+            }
+        }
+       return books;
+    }
+
+
+    public List<Books> RecentBooks()
+    {
+        var books = new List<Books>();
+
+        using (var con = new SqlConnection(_connectionString))
+        {
+            var cmd = new SqlCommand("sp_recentBooks", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            con.Open();
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    books.Add(new Books
+                    {
+                        bookId = Convert.ToInt32(reader["bookId"]),
+                        bookName = reader["bookName"].ToString(),
+                        authorName = reader["authorName"].ToString(),
+                        Base64Image = Convert.ToBase64String((byte[])reader["bookImage"])
+                    });
+                }
+            }
+        }
+        return books;
+    }
+
+    public async Task RateBook(int userId, int bookId, int ratings)
+    {
+        await using var con = new SqlConnection(_connectionString);
+        await con.OpenAsync().ConfigureAwait(false);
+        await using var cmd = new SqlCommand("sp_rate_book", con)
+        {
+
+            CommandType = CommandType.StoredProcedure
+        };
+        cmd.Parameters.AddWithValue("@userId", userId);
+        cmd.Parameters.AddWithValue("@bookId", bookId);
+        cmd.Parameters.AddWithValue("@ratings", ratings);
+
+
+        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+    }
+
 
 }

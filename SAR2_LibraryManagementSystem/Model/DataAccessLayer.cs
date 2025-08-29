@@ -26,6 +26,7 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
+                cmd.Parameters.AddWithValue("@ubirthDate", user.ubirthDate);
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
@@ -108,7 +109,8 @@ public class DataAccessLayer
                 cmd.Parameters.AddWithValue("@email", user.email);
                 cmd.Parameters.AddWithValue("@pass", user.pass);
                 cmd.Parameters.AddWithValue("@mobileNo", user.mobileNo);
-               
+                cmd.Parameters.AddWithValue("@ubirthDate", user.ubirthDate);
+
 
                 int affectedrow = cmd.ExecuteNonQuery();
             }
@@ -177,6 +179,7 @@ public class DataAccessLayer
                         email = reader["email"].ToString(),
                         pass = reader["pass"].ToString(),
                         mobileNo = reader["mobileNo"].ToString(),
+                        ubirthDate = reader.IsDBNull(reader.GetOrdinal("ubirthDate")) ? (DateTime?)null: reader.GetDateTime(reader.GetOrdinal("ubirthDate"))
                         //IsAuthorized = Convert.ToBoolean(reader["isAuthorized"])
 
                     });
@@ -275,9 +278,8 @@ public class DataAccessLayer
                             email = reader["email"].ToString(),
                             pass = reader["pass"].ToString(),
                             mobileNo = reader["mobileNo"].ToString(),
+                            ubirthDate = reader.IsDBNull(reader.GetOrdinal("ubirthDate"))? (DateTime?)null: reader.GetDateTime(reader.GetOrdinal("ubirthDate"))
                             //IsBlocked = Convert.ToBoolean(reader["IsBlocked"]),
-
-
 
                         };
                     }
@@ -409,10 +411,4 @@ public class DataAccessLayer
             }
         }
     }
-
-
-
-
-
-
 }

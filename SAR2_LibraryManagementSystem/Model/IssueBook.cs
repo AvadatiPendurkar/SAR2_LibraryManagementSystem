@@ -11,4 +11,19 @@
         public int bookQty { get; set; }
         public string status { get; set; }
     }
+
+    public class IssueBookReportDto
+    {
+        public int UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int TotalBooksIssued { get; set; }
+    }
+
+    public class GenreRecommendation
+    {
+        public int GenreId { get; set; }
+        public string Genre { get; set; }
+        public int TotalIssuedBooks { get; set; }
+    }
 }

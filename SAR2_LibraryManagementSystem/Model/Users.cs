@@ -8,6 +8,9 @@
         public string email { get; set; }
         public string pass { get; set; }
         public string mobileNo { get; set; }
+
+        public DateTime? ubirthDate { get; set; }
+
         //public bool IsAuthorized { get; set; } = false;
 
     }
@@ -31,6 +34,9 @@
         public string Base64Image { get; set; }
     }
 
-
+    public class UserPasswordUpdateDto
+    {
+        public string newPass { get; set; }
+    }
 
 }

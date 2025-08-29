@@ -60,6 +60,49 @@ public class ManagerDAL
 
         }
     }
+
+    public void UpdateManagerPassword(int mId, string pass)
+    {
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+
+            using (var cmd = new SqlCommand("sp_updateManagerPassword", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@mId", mId);
+                cmd.Parameters.AddWithValue("@pass", pass);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+
+
+
+    //update manager Pass
+    //public void UpdateManagerPassword(int mId)
+    //{
+    //    using (var conn = new SqlConnection(_connectionString))
+    //    {
+
+    //        conn.Open();
+
+    //        using (var cmd = new SqlCommand("sp_updateManagerPassword", conn))
+    //        {
+    //            cmd.CommandType = CommandType.StoredProcedure;
+    //            cmd.Parameters.AddWithValue("@mId", manager.mId);
+    //            cmd.Parameters.AddWithValue("@pass", manager.pass);
+
+    //            int affectedrow = cmd.ExecuteNonQuery();
+
+    //        }
+
+    //    }
+    //}
+
+
     //show All Manager
     public List<Managers> GetAllManagers()
     {

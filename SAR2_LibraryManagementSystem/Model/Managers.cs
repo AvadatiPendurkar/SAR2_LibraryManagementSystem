@@ -11,4 +11,9 @@
         public bool isAuthorized { get; set; }
 
     }
+
+    public class ManagerPasswordUpdateDto
+    {
+        public string newPass { get; set; }
+    }
 }

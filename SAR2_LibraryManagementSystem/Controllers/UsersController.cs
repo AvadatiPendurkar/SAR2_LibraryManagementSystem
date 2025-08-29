@@ -130,6 +130,19 @@ namespace SAR2_LibraryManagementSystem.Controllers
             return Ok(new { success = true, message = "User updated successfully." });
         }
 
+
+        [HttpPut("updatePassword/{userId}")]
+        public IActionResult UpdateManagerPassword(int userId, [FromBody] UserPasswordUpdateDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.newPass))
+                return BadRequest(new { error = "New password is required." });
+
+            _dataAccessLayer.UpdateUserPassword(userId, dto.newPass);
+            return Ok(new { success = "Password updated successfully." });
+        }
+
+
+
         [HttpGet("allusers")]
         public IActionResult GetAllUsers()
         {

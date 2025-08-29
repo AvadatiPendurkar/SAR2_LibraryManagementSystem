@@ -160,17 +160,43 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
         }
 
-        [HttpPut("update/{id}")]
-        public IActionResult UpdateManager(int id, [FromBody] Managers manager)
-        {
-            Console.WriteLine($"Route ID: {id}, Body ID: {manager?.mId}");
 
-            if (manager == null)
+        [HttpPut("update/{mId}")]
+        public IActionResult UpdateManager(int mId, [FromBody] Managers managers)
+        {
+            //Console.WriteLine($"Route ID: {id}, Body ID: {manager?.mId}");
+
+            if (mId == null)
                 return BadRequest(new { error = "Manager data is missing" });
 
-            _managerDAL.UpdateManager(manager);
+            _managerDAL.UpdateManager(managers);
             return Ok(new { success = "Manager updated (even if ID mismatch)" });
         }
+
+
+        [HttpPut("updatePassword/{mId}")]
+        public IActionResult UpdateManagerPassword(int mId, [FromBody] ManagerPasswordUpdateDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.newPass))
+                return BadRequest(new { error = "New password is required." });
+
+            _managerDAL.UpdateManagerPassword(mId, dto.newPass);
+            return Ok(new { success = "Password updated successfully." });
+        }
+
+
+        //[HttpPut("updatePassword/{id}")]
+        //public IActionResult UpdateManagerPassword(int id, [FromBody] Managers manager)
+        //{
+        //    Console.WriteLine($"Route ID: {id}, Body ID: {manager?.mId}");
+
+        //    if (manager == null)
+        //    {
+        //        return BadRequest(new { error = "Manager data is missing" });
+        //    }
+        //    _managerDAL.UpdateManagerPassword(manager);
+        //    return Ok(new { success = "Manager updated (even if ID mismatch)" });
+        //}
 
 
 
@@ -257,6 +283,7 @@ namespace SAR2_LibraryManagementSystem.Controllers
 
                 // Step 2: Update IsAuthorized status
                 var updateCommand = new SqlCommand("Sp_UpdateAuthorizationStatus1", connection);
+                updateCommand.CommandType = CommandType.StoredProcedure;
                 updateCommand.Parameters.AddWithValue("@mId", mId);
 
                 await updateCommand.ExecuteNonQueryAsync();
